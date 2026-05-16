@@ -1,0 +1,828 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Quiz impératif espagnol</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f7f3ea;
+      --panel: #fffdf8;
+      --ink: #22302f;
+      --muted: #66716f;
+      --line: #d8d0c2;
+      --accent: #1d4ed8;
+      --accent-dark: #1e3a8a;
+      --warn: #9a4f0b;
+      --bad: #9b2d30;
+      --good: #1f7a45;
+      --answer-correction: #1f7a45;
+      --review-answer-size: clamp(1.45rem, 3.5vw, 2.1rem);
+      --review-label-size: clamp(1rem, 2.2vw, 1.35rem);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    main {
+      width: min(980px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 28px 0 42px;
+    }
+
+    header {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 20px;
+      padding-bottom: 18px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(1.8rem, 2.6vw, 2.6rem);
+      line-height: 1.05;
+      letter-spacing: 0;
+    }
+
+    .title-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .spanish-flag {
+      width: 48px;
+      height: 32px;
+      border: 1px solid rgba(34, 48, 47, 0.22);
+      border-radius: 4px;
+      background: linear-gradient(
+        to bottom,
+        #c60b1e 0 25%,
+        #ffc400 25% 75%,
+        #c60b1e 75% 100%
+      );
+      box-shadow: 0 1px 2px rgba(34, 48, 47, 0.12);
+      flex: 0 0 auto;
+    }
+
+    .score {
+      display: grid;
+      gap: 4px;
+      min-width: 170px;
+      padding: 12px 14px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel);
+      text-align: right;
+    }
+
+    .score.score-dark-red {
+      background: #711d22;
+      color: #ffffff;
+      border-color: #711d22;
+    }
+
+    .score.score-light-red {
+      background: #f4b5b8;
+      color: #4a1115;
+      border-color: #d9858a;
+    }
+
+    .score.score-yellow {
+      background: #f1d45b;
+      color: #332b06;
+      border-color: #c7aa27;
+    }
+
+    .score.score-dark-green {
+      background: #14633a;
+      color: #ffffff;
+      border-color: #14633a;
+    }
+
+    .score.score-dark-red .muted,
+    .score.score-dark-green .muted {
+      color: rgba(255, 255, 255, 0.78);
+    }
+
+    .score.score-light-red .muted,
+    .score.score-yellow .muted {
+      color: currentColor;
+    }
+
+    .score strong {
+      font-size: 1.35rem;
+    }
+
+    .muted {
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    .quiz {
+      margin-top: 24px;
+      padding: 22px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel);
+    }
+
+    .prompt {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      margin-bottom: 18px;
+    }
+
+    .word {
+      font-size: clamp(2rem, 8vw, 4.8rem);
+      font-weight: 800;
+      line-height: 1;
+    }
+
+    .progress {
+      color: var(--muted);
+      white-space: nowrap;
+    }
+
+    form {
+      display: grid;
+      grid-template-columns: max-content max-content max-content max-content;
+      column-gap: 28px;
+      row-gap: 10px;
+      align-items: end;
+    }
+
+    label {
+      display: inline-grid;
+      grid-template-columns: auto 190px;
+      align-items: center;
+      gap: 4px;
+      font-weight: 700;
+    }
+
+    .form-particle {
+      font-size: clamp(1.35rem, 3vw, 2rem);
+      font-weight: 850;
+      line-height: 1;
+    }
+
+    input {
+      width: 100%;
+      min-height: 48px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 10px 12px;
+      font: inherit;
+      font-size: clamp(1.35rem, 3vw, 2rem);
+      font-weight: 850;
+      background: #fff;
+      color: var(--accent);
+    }
+
+    input:focus {
+      outline: 3px solid rgba(15, 123, 108, 0.22);
+      border-color: var(--accent);
+    }
+
+    .actions {
+      grid-column: 1;
+      grid-row: 2;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 0;
+    }
+
+    .submit-button {
+      align-self: center;
+      background: var(--good);
+      color: white;
+    }
+
+    .submit-button:hover {
+      background: #145c33;
+    }
+
+    .next-button {
+      align-self: center;
+      background: var(--accent);
+      color: white;
+    }
+
+    .next-button:hover {
+      background: var(--accent-dark);
+    }
+
+    .restart-button {
+      background: #dedbd3;
+      color: var(--ink);
+      border: 1px solid var(--line);
+    }
+
+    .restart-button:hover {
+      background: #cbc6ba;
+    }
+
+    button {
+      min-height: 42px;
+      border: 0;
+      border-radius: 6px;
+      padding: 10px 16px;
+      background: var(--accent);
+      color: white;
+      font: inherit;
+      font-weight: 750;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: var(--accent-dark);
+    }
+
+    button:disabled {
+      cursor: not-allowed;
+      opacity: 0.48;
+    }
+
+    button.secondary {
+      border: 1px solid var(--line);
+      background: #fff;
+      color: var(--ink);
+    }
+
+    button.secondary:hover {
+      background: #f0ebe1;
+    }
+
+    #feedback {
+      min-height: 72px;
+      margin-top: 18px;
+      padding: 14px;
+      border-radius: 8px;
+      background: #f1eee6;
+      color: var(--ink);
+    }
+
+    .result-grid {
+      display: grid;
+      gap: 12px;
+    }
+
+    .good {
+      background: #ddf3e4;
+      border-color: rgba(31, 122, 69, 0.35);
+      color: var(--good);
+      font-weight: 750;
+    }
+
+    .partial {
+      color: var(--warn);
+      font-weight: 750;
+    }
+
+    .bad {
+      background: #fde6e7;
+      border-color: rgba(155, 45, 48, 0.35);
+      color: var(--bad);
+      font-weight: 750;
+    }
+
+    .answer-row {
+      border: 1px solid;
+      border-radius: 8px;
+      padding: 10px 12px;
+    }
+
+    .answer-label {
+      display: inline-block;
+      margin-right: 6px;
+      font-size: var(--review-label-size);
+      font-weight: 850;
+      line-height: 1.1;
+    }
+
+    .student-answer {
+      display: inline-block;
+      margin-left: 6px;
+      font-size: var(--review-answer-size);
+      font-weight: 850;
+      line-height: 1.1;
+    }
+
+    .good .student-answer {
+      color: var(--good);
+    }
+
+    .bad .student-answer {
+      color: var(--bad);
+    }
+
+    .correction {
+      display: block;
+      margin-top: 4px;
+      color: var(--answer-correction);
+      font-size: var(--review-answer-size);
+      font-weight: 850;
+      line-height: 1.1;
+    }
+
+    .correction-label {
+      display: inline-block;
+      margin-right: 6px;
+      font-size: var(--review-label-size);
+      font-weight: 850;
+    }
+
+    .final-score {
+      color: #ffffff;
+      font-size: 1.2rem;
+      font-weight: 800;
+    }
+
+    .final-score.dark-red {
+      background: #711d22;
+    }
+
+    .final-score.light-red {
+      background: #f4b5b8;
+      color: #4a1115;
+    }
+
+    .final-score.yellow {
+      background: #f1d45b;
+      color: #332b06;
+    }
+
+    .final-score.dark-green {
+      background: #14633a;
+    }
+
+    section {
+      margin-top: 26px;
+    }
+
+    .revision-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      margin-bottom: 12px;
+    }
+
+    h2 {
+      margin: 0;
+      font-size: 1.3rem;
+      letter-spacing: 0;
+    }
+
+    [hidden] {
+      display: none !important;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 520px;
+    }
+
+    th, td {
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--line);
+      text-align: left;
+    }
+
+    th {
+      background: #ece5d8;
+      font-size: 0.92rem;
+      text-transform: uppercase;
+    }
+
+    tr:last-child td {
+      border-bottom: 0;
+    }
+
+    @media (max-width: 700px) {
+      header, .prompt, .revision-head {
+        align-items: stretch;
+        flex-direction: column;
+      }
+
+      .score {
+        text-align: left;
+      }
+
+      form {
+        grid-template-columns: 1fr;
+      }
+
+      label {
+        grid-template-columns: auto minmax(0, 1fr);
+      }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <div>
+        <div class="title-row">
+          <h1>Quiz impératif espagnol</h1>
+          <span class="spanish-flag" role="img" aria-label="Drapeau espagnol"></span>
+        </div>
+        <p class="muted">Formes tú et vosotros, avec correction instantanée.</p>
+      </div>
+      <div class="score" aria-live="polite">
+        <span class="muted">Note instantanée</span>
+        <strong id="percent">0 %</strong>
+        <span id="points" class="muted">0 / 38 points</span>
+      </div>
+    </header>
+
+    <div class="quiz">
+      <div class="prompt">
+        <div>
+          <div class="muted">Infinitif proposé</div>
+          <div id="word" class="word"></div>
+        </div>
+        <div id="progress" class="progress"></div>
+      </div>
+
+      <form id="answer-form" autocomplete="off">
+        <label>
+          <span class="form-particle">tú</span>
+          <input id="answer-tu" type="text" inputmode="text" spellcheck="false" aria-label="Réponse tú" required>
+        </label>
+        <label>
+          <span class="form-particle">vosotros</span>
+          <input id="answer-vosotros" type="text" inputmode="text" spellcheck="false" aria-label="Réponse vosotros" required>
+        </label>
+        <button class="submit-button" type="submit">Valider</button>
+        <button class="next-button" id="next-button" type="button">Question suivante</button>
+        <div class="actions">
+          <button class="restart-button" id="restart-button" type="button">Recommencer</button>
+        </div>
+      </form>
+
+      <div id="feedback" aria-live="polite">Entre les deux formes impératives, puis valide.</div>
+    </div>
+
+    <section>
+      <div class="revision-head">
+        <h2>Table de révision</h2>
+        <button class="secondary" id="revision-toggle" type="button" disabled>Réviser la table</button>
+      </div>
+      <div class="table-wrap" id="revision-table" hidden>
+        <table>
+          <thead>
+            <tr>
+              <th>Infinitif</th>
+              <th>tú</th>
+              <th>vosotros</th>
+            </tr>
+          </thead>
+          <tbody>
+          <tr><td>cantar</td><td>canta</td><td>cantad</td></tr>
+          <tr><td>comer</td><td>come</td><td>comed</td></tr>
+          <tr><td>vivir</td><td>vive</td><td>vivid</td></tr>
+          <tr><td>venir</td><td>ven</td><td>venid</td></tr>
+          <tr><td>poner</td><td>pon</td><td>poned</td></tr>
+          <tr><td>hacer</td><td>haz</td><td>haced</td></tr>
+          <tr><td>salir</td><td>sal</td><td>salid</td></tr>
+          <tr><td>tener</td><td>ten</td><td>tened</td></tr>
+          <tr><td>decir</td><td>di</td><td>decid</td></tr>
+          <tr><td>ir</td><td>ve</td><td>id</td></tr>
+          <tr><td>ser</td><td>sé</td><td>sed</td></tr>
+          <tr><td>fundir</td><td>funde</td><td>fundid</td></tr>
+          <tr><td>añadir</td><td>añade</td><td>añadid</td></tr>
+          <tr><td>trocear</td><td>trocea</td><td>trocead</td></tr>
+          <tr><td>remover</td><td>remueve</td><td>removed</td></tr>
+          <tr><td>dejar</td><td>deja</td><td>dejad</td></tr>
+          <tr><td>apartarlo</td><td>apártalo</td><td>apartadlo</td></tr>
+          <tr><td>sacarlo</td><td>sácalo</td><td>sacadlo</td></tr>
+          <tr><td>desmoldarlo</td><td>desmóldalo</td><td>desmoldadlo</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const originalItems = [
+  {
+    "infinitive": "cantar",
+    "tu": "canta",
+    "vosotros": "cantad"
+  },
+  {
+    "infinitive": "comer",
+    "tu": "come",
+    "vosotros": "comed"
+  },
+  {
+    "infinitive": "vivir",
+    "tu": "vive",
+    "vosotros": "vivid"
+  },
+  {
+    "infinitive": "venir",
+    "tu": "ven",
+    "vosotros": "venid"
+  },
+  {
+    "infinitive": "poner",
+    "tu": "pon",
+    "vosotros": "poned"
+  },
+  {
+    "infinitive": "hacer",
+    "tu": "haz",
+    "vosotros": "haced"
+  },
+  {
+    "infinitive": "salir",
+    "tu": "sal",
+    "vosotros": "salid"
+  },
+  {
+    "infinitive": "tener",
+    "tu": "ten",
+    "vosotros": "tened"
+  },
+  {
+    "infinitive": "decir",
+    "tu": "di",
+    "vosotros": "decid"
+  },
+  {
+    "infinitive": "ir",
+    "tu": "ve",
+    "vosotros": "id"
+  },
+  {
+    "infinitive": "ser",
+    "tu": "sé",
+    "vosotros": "sed"
+  },
+  {
+    "infinitive": "fundir",
+    "tu": "funde",
+    "vosotros": "fundid"
+  },
+  {
+    "infinitive": "añadir",
+    "tu": "añade",
+    "vosotros": "añadid"
+  },
+  {
+    "infinitive": "trocear",
+    "tu": "trocea",
+    "vosotros": "trocead"
+  },
+  {
+    "infinitive": "remover",
+    "tu": "remueve",
+    "vosotros": "removed"
+  },
+  {
+    "infinitive": "dejar",
+    "tu": "deja",
+    "vosotros": "dejad"
+  },
+  {
+    "infinitive": "apartarlo",
+    "tu": "apártalo",
+    "vosotros": "apartadlo"
+  },
+  {
+    "infinitive": "sacarlo",
+    "tu": "sácalo",
+    "vosotros": "sacadlo"
+  },
+  {
+    "infinitive": "desmoldarlo",
+    "tu": "desmóldalo",
+    "vosotros": "desmoldadlo"
+  }
+];
+    let items = [];
+    let index = 0;
+    let score = 0;
+    let answered = false;
+    const maxScore = originalItems.length * 2;
+
+    const word = document.querySelector("#word");
+    const progress = document.querySelector("#progress");
+    const form = document.querySelector("#answer-form");
+    const answerTu = document.querySelector("#answer-tu");
+    const answerVosotros = document.querySelector("#answer-vosotros");
+    const feedback = document.querySelector("#feedback");
+    const scoreCard = document.querySelector(".score");
+    const percent = document.querySelector("#percent");
+    const points = document.querySelector("#points");
+    const nextButton = document.querySelector("#next-button");
+    const restartButton = document.querySelector("#restart-button");
+    const revisionToggle = document.querySelector("#revision-toggle");
+    const revisionTable = document.querySelector("#revision-table");
+
+    function shuffle(array) {
+      const copy = [...array];
+      for (let i = copy.length - 1; i > 0; i -= 1) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [copy[i], copy[j]] = [copy[j], copy[i]];
+      }
+      return copy;
+    }
+
+    function normalize(value) {
+      return value.trim().toLocaleLowerCase("es");
+    }
+
+    function levenshtein(a, b) {
+      const rows = Array.from({ length: a.length + 1 }, () => []);
+      for (let i = 0; i <= a.length; i += 1) rows[i][0] = i;
+      for (let j = 0; j <= b.length; j += 1) rows[0][j] = j;
+      for (let i = 1; i <= a.length; i += 1) {
+        for (let j = 1; j <= b.length; j += 1) {
+          const cost = a[i - 1] === b[j - 1] ? 0 : 1;
+          rows[i][j] = Math.min(
+            rows[i - 1][j] + 1,
+            rows[i][j - 1] + 1,
+            rows[i - 1][j - 1] + cost
+          );
+        }
+      }
+      return rows[a.length][b.length];
+    }
+
+    function answerScore(given, expected) {
+      const cleanGiven = normalize(given);
+      const cleanExpected = normalize(expected);
+      if (cleanGiven === cleanExpected) return 1;
+      if (!cleanGiven && cleanExpected) return 0;
+      const distance = levenshtein(cleanGiven, cleanExpected);
+      return distance === 1 ? 0.25 : 0;
+    }
+
+    function formatScore(value) {
+      return Number.isInteger(value) ? String(value) : value.toFixed(2);
+    }
+
+    function scoreBand(pct) {
+      if (pct < 25) return "dark-red";
+      if (pct <= 50) return "light-red";
+      if (pct < 75) return "yellow";
+      return "dark-green";
+    }
+
+    function updateScore() {
+      const rawPct = maxScore === 0 ? 0 : (score / maxScore) * 100;
+      const pct = Math.round(rawPct);
+      percent.textContent = `${pct} %`;
+      points.textContent = `${formatScore(score)} / ${maxScore} points`;
+      scoreCard.classList.remove("score-dark-red", "score-light-red", "score-yellow", "score-dark-green");
+      scoreCard.classList.add(`score-${scoreBand(rawPct)}`);
+    }
+
+    function setRevisionAccess(enabled) {
+      revisionToggle.disabled = !enabled;
+      if (!enabled) {
+        revisionTable.hidden = true;
+        revisionToggle.textContent = "Réviser la table";
+      }
+    }
+
+    function renderQuestion() {
+      if (index >= items.length) {
+        word.textContent = "Terminé";
+        progress.textContent = `${items.length} / ${items.length}`;
+        const rawPct = maxScore === 0 ? 0 : (score / maxScore) * 100;
+        feedback.className = `final-score ${scoreBand(rawPct)}`;
+        feedback.innerHTML = `Score final : <strong>${formatScore(score)} / ${maxScore}</strong>.`;
+      answerTu.disabled = true;
+      answerVosotros.disabled = true;
+      nextButton.disabled = true;
+      return;
+      }
+
+      const item = items[index];
+      word.textContent = item.infinitive;
+      progress.textContent = `${index + 1} / ${items.length}`;
+      answerTu.value = "";
+      answerVosotros.value = "";
+      answerTu.disabled = false;
+      answerVosotros.disabled = false;
+      nextButton.disabled = true;
+      answered = false;
+      setRevisionAccess(false);
+      feedback.className = "";
+      feedback.textContent = "Entre les deux formes impératives, puis valide.";
+      answerTu.focus();
+    }
+
+    function classify(value) {
+      if (value === 1) return "good";
+      if (value > 0) return "bad";
+      return "bad";
+    }
+
+    function escapeHtml(value) {
+      return value.replace(/[&<>"']/g, (char) => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#039;"
+      }[char]));
+    }
+
+    function correctionMarkup(label, scoreValue, expected) {
+      return scoreValue === 1 ? "" : `<div class="correction"><span class="correction-label">${label}:</span>${expected}</div>`;
+    }
+
+    function answerMarkup(label, given, scoreValue, expected) {
+      const shownAnswer = escapeHtml(given.trim() || "(vide)");
+      return `
+        <div>
+          <div class="answer-row ${classify(scoreValue)}">
+            <span class="answer-label">${label}</span> : <span class="student-answer">${shownAnswer}</span>
+            <span>${formatScore(scoreValue)} / 1</span>
+          </div>
+          ${correctionMarkup(label, scoreValue, expected)}
+        </div>
+      `;
+    }
+
+    form.addEventListener("submit", (event) => {
+      event.preventDefault();
+      if (answered || index >= items.length) return;
+
+      const item = items[index];
+      const tuAnswer = answerTu.value;
+      const vosotrosAnswer = answerVosotros.value;
+      const tuScore = answerScore(tuAnswer, item.tu);
+      const vosotrosScore = answerScore(vosotrosAnswer, item.vosotros);
+      const gained = tuScore + vosotrosScore;
+      score += gained;
+      answered = true;
+      nextButton.disabled = false;
+      updateScore();
+      setRevisionAccess(gained < 2);
+
+      feedback.innerHTML = `
+        <div class="result-grid">
+          ${answerMarkup("tú", tuAnswer, tuScore, item.tu)}
+          ${answerMarkup("vosotros", vosotrosAnswer, vosotrosScore, item.vosotros)}
+          <div>Total gagné : <strong>${formatScore(gained)} / 2</strong></div>
+        </div>
+      `;
+    });
+
+    nextButton.addEventListener("click", () => {
+      if (index < items.length) {
+        index += 1;
+        renderQuestion();
+      }
+    });
+
+    restartButton.addEventListener("click", () => {
+      items = shuffle(originalItems);
+      index = 0;
+      score = 0;
+      updateScore();
+      renderQuestion();
+    });
+
+    revisionToggle.addEventListener("click", () => {
+      if (revisionToggle.disabled) return;
+      revisionTable.hidden = !revisionTable.hidden;
+      revisionToggle.textContent = revisionTable.hidden ? "Réviser la table" : "Masquer la table";
+    });
+
+    items = shuffle(originalItems);
+    updateScore();
+    renderQuestion();
+  </script>
+</body>
+</html>
