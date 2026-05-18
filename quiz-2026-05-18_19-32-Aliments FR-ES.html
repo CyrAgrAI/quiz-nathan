@@ -1,0 +1,1209 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Quiz vocabulaire francais-espagnol : aliments</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f7f3ea;
+      --panel: #fffdf8;
+      --ink: #22302f;
+      --muted: #66716f;
+      --line: #d8d0c2;
+      --accent: #1d4ed8;
+      --accent-dark: #1e3a8a;
+      --bad: #9b2d30;
+      --good: #1f7a45;
+      --answer-correction: #1f7a45;
+      --review-answer-size: clamp(1.45rem, 3.5vw, 2.1rem);
+      --review-label-size: clamp(1.2rem, 2.5vw, 1.65rem);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    main {
+      width: min(980px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 28px 0 42px;
+    }
+
+    header {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 20px;
+      padding-bottom: 18px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(1.8rem, 2.6vw, 2.6rem);
+      line-height: 1.05;
+      letter-spacing: 0;
+    }
+
+    .score {
+      display: grid;
+      gap: 4px;
+      min-width: 170px;
+      padding: 12px 14px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel);
+      text-align: right;
+    }
+
+    .score.score-dark-red {
+      background: #711d22;
+      color: #ffffff;
+      border-color: #711d22;
+    }
+
+    .score.score-light-red {
+      background: #f4b5b8;
+      color: #4a1115;
+      border-color: #d9858a;
+    }
+
+    .score.score-yellow {
+      background: #f1d45b;
+      color: #332b06;
+      border-color: #c7aa27;
+    }
+
+    .score.score-dark-green {
+      background: #14633a;
+      color: #ffffff;
+      border-color: #14633a;
+    }
+
+    .score.score-dark-red .muted,
+    .score.score-dark-green .muted {
+      color: rgba(255, 255, 255, 0.78);
+    }
+
+    .score.score-light-red .muted,
+    .score.score-yellow .muted {
+      color: currentColor;
+    }
+
+    .score strong {
+      font-size: 1.35rem;
+    }
+
+    .muted {
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    .quiz {
+      margin-top: 24px;
+      padding: 22px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel);
+    }
+
+    .prompt {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      margin-bottom: 18px;
+    }
+
+    .word {
+      font-size: clamp(2rem, 8vw, 4.8rem);
+      font-weight: 800;
+      line-height: 1;
+    }
+
+    .progress {
+      color: var(--muted);
+      white-space: nowrap;
+    }
+
+    form {
+      display: grid;
+      grid-template-columns: max-content max-content max-content;
+      column-gap: 28px;
+      row-gap: 10px;
+      align-items: center;
+    }
+
+    label {
+      display: inline-grid;
+      grid-template-columns: auto 230px;
+      align-items: center;
+      gap: 6px;
+      font-weight: 700;
+    }
+
+    .form-particle {
+      font-size: clamp(1.35rem, 3vw, 2rem);
+      font-weight: 850;
+      line-height: 1;
+    }
+
+    input {
+      width: 100%;
+      min-height: 48px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 10px 12px;
+      font: inherit;
+      background: #fff;
+      color: var(--ink);
+    }
+
+    input:focus {
+      outline: 3px solid rgba(15, 123, 108, 0.22);
+      border-color: var(--accent);
+    }
+
+    .actions {
+      grid-column: 1;
+      grid-row: 2;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 0;
+    }
+
+    .submit-button {
+      align-self: center;
+      background: var(--good);
+      color: white;
+    }
+
+    .submit-button:hover {
+      background: #145c33;
+    }
+
+    .next-button {
+      align-self: center;
+      background: var(--accent);
+      color: white;
+    }
+
+    .next-button:hover {
+      background: var(--accent-dark);
+    }
+
+    .restart-button {
+      background: #dedbd3;
+      color: var(--ink);
+      border: 1px solid var(--line);
+    }
+
+    .restart-button:hover {
+      background: #cbc6ba;
+    }
+
+    button {
+      min-height: 42px;
+      border: 0;
+      border-radius: 6px;
+      padding: 10px 16px;
+      background: var(--accent);
+      color: white;
+      font: inherit;
+      font-weight: 750;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: var(--accent-dark);
+    }
+
+    button:disabled {
+      cursor: not-allowed;
+      opacity: 0.48;
+    }
+
+    button.secondary {
+      border: 1px solid var(--line);
+      background: #fff;
+      color: var(--ink);
+    }
+
+    button.secondary:hover {
+      background: #f0ebe1;
+    }
+
+    #feedback {
+      min-height: 72px;
+      margin-top: 18px;
+      padding: 14px;
+      border-radius: 8px;
+      background: #f1eee6;
+      color: var(--ink);
+    }
+
+    .result-grid {
+      display: grid;
+      gap: 12px;
+    }
+
+    .good {
+      background: #ddf3e4;
+      border-color: rgba(31, 122, 69, 0.35);
+      color: var(--good);
+      font-weight: 750;
+    }
+
+    .bad {
+      background: #fde6e7;
+      border-color: rgba(155, 45, 48, 0.35);
+      color: var(--bad);
+      font-weight: 750;
+    }
+
+    .answer-row {
+      border: 1px solid;
+      border-radius: 8px;
+      padding: 10px 12px;
+    }
+
+    .student-answer {
+      display: inline-block;
+      font-size: var(--review-answer-size);
+      font-weight: 850;
+      line-height: 1.1;
+    }
+
+    .good .student-answer {
+      color: var(--good);
+    }
+
+    .bad .student-answer {
+      color: var(--bad);
+    }
+
+    .correction {
+      display: block;
+      margin-top: 4px;
+      color: var(--answer-correction);
+      font-size: var(--review-answer-size);
+      font-weight: 850;
+      line-height: 1.1;
+    }
+
+    .final-score {
+      color: #ffffff;
+      font-size: 1.2rem;
+      font-weight: 800;
+    }
+
+    .final-score.dark-red {
+      background: #711d22;
+    }
+
+    .final-score.light-red {
+      background: #f4b5b8;
+      color: #4a1115;
+    }
+
+    .final-score.yellow {
+      background: #f1d45b;
+      color: #332b06;
+    }
+
+    .final-score.dark-green {
+      background: #14633a;
+    }
+
+    section {
+      margin-top: 26px;
+    }
+
+    .revision-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      margin-bottom: 12px;
+    }
+
+    h2 {
+      margin: 0;
+      font-size: 1.3rem;
+      letter-spacing: 0;
+    }
+
+    [hidden] {
+      display: none !important;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 420px;
+    }
+
+    th, td {
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--line);
+      text-align: left;
+    }
+
+    th {
+      background: #ece5d8;
+      font-size: 0.92rem;
+      text-transform: uppercase;
+    }
+
+    tr:last-child td {
+      border-bottom: 0;
+    }
+
+    @media (max-width: 760px) {
+      header, .prompt, .revision-head {
+        align-items: stretch;
+        flex-direction: column;
+      }
+
+      .score {
+        text-align: left;
+      }
+
+      form {
+        grid-template-columns: 1fr;
+      }
+
+      label {
+        grid-template-columns: auto minmax(0, 1fr);
+      }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <div>
+        <h1>Quiz vocabulaire francais-espagnol : aliments</h1>
+        <p class="muted">Une question, une case, correction instantanée.</p>
+      </div>
+      <div class="score" aria-live="polite">
+        <span class="muted">Note instantanée</span>
+        <strong id="percent">0 %</strong>
+        <span id="points" class="muted">0 / 85 points</span>
+      </div>
+    </header>
+
+    <div class="quiz">
+      <div class="prompt">
+        <div>
+          <div id="direction" class="muted"></div>
+          <div id="word" class="word"></div>
+        </div>
+        <div id="progress" class="progress"></div>
+      </div>
+
+      <form id="answer-form" autocomplete="off">
+        <label>
+          <input id="answer" type="text" inputmode="text" spellcheck="false" aria-label="Réponse" required>
+        </label>
+        <button class="submit-button" type="submit">Valider</button>
+        <button class="next-button" id="next-button" type="button">Question suivante</button>
+        <div class="actions">
+          <button class="restart-button" id="restart-button" type="button">Recommencer</button>
+        </div>
+      </form>
+
+      <div id="feedback" aria-live="polite">Entre la traduction, puis valide.</div>
+    </div>
+
+    <section>
+      <div class="revision-head">
+        <h2>Table de révision</h2>
+        <button class="secondary" id="revision-toggle" type="button" disabled>Réviser la table</button>
+      </div>
+      <div class="table-wrap" id="revision-table" hidden>
+        <table>
+          <thead>
+            <tr>
+              <th>Colonne 1</th>
+              <th>Colonne 2</th>
+            </tr>
+          </thead>
+          <tbody>
+          <tr><td>les aliments</td><td>los alimentos</td></tr>
+          <tr><td>la nourriture</td><td>la comida</td></tr>
+          <tr><td>la nourriture saine</td><td>la comida sana</td></tr>
+          <tr><td>les hamburgers</td><td>las hamburguesas</td></tr>
+          <tr><td>les frites</td><td>las patatas fritas</td></tr>
+          <tr><td>la pizza</td><td>la pizza</td></tr>
+          <tr><td>les ingrédients</td><td>los ingredientes</td></tr>
+          <tr><td>les desserts</td><td>los postres</td></tr>
+          <tr><td>les donuts</td><td>los dónuts</td></tr>
+          <tr><td>les glaces</td><td>los helados</td></tr>
+          <tr><td>les olives</td><td>las aceitunas</td></tr>
+          <tr><td>la sauce</td><td>la salsa</td></tr>
+          <tr><td>l&#x27;ananas</td><td>la piña</td></tr>
+          <tr><td>la vanille</td><td>la vainilla</td></tr>
+          <tr><td>les fruits</td><td>las frutas</td></tr>
+          <tr><td>les légumes</td><td>las verduras</td></tr>
+          <tr><td>la viande</td><td>la carne</td></tr>
+          <tr><td>le poisson</td><td>el pescado</td></tr>
+          <tr><td>l&#x27;eau</td><td>el agua</td></tr>
+          <tr><td>le riz</td><td>el arroz</td></tr>
+          <tr><td>les pâtes</td><td>la pasta</td></tr>
+          <tr><td>les céréales</td><td>los cereales</td></tr>
+          <tr><td>le pain</td><td>el pan</td></tr>
+          <tr><td>le lait</td><td>la leche</td></tr>
+          <tr><td>le fromage</td><td>el queso</td></tr>
+          <tr><td>les yaourts</td><td>los yogures</td></tr>
+          <tr><td>l&#x27;huile d&#x27;olive</td><td>el aceite de oliva</td></tr>
+          <tr><td>les légumineuses</td><td>las legumbres</td></tr>
+          <tr><td>les fruits secs</td><td>los frutos secos</td></tr>
+          <tr><td>les poissons</td><td>los pescados</td></tr>
+          <tr><td>les fruits de mer</td><td>los mariscos</td></tr>
+          <tr><td>les oeufs</td><td>los huevos</td></tr>
+          <tr><td>les viandes maigres</td><td>las carnes magras</td></tr>
+          <tr><td>le poulet</td><td>el pollo</td></tr>
+          <tr><td>les viandes grasses</td><td>las carnes grasas</td></tr>
+          <tr><td>la viande de boeuf</td><td>la carne de vaca</td></tr>
+          <tr><td>la viande de porc</td><td>la carne de cerdo</td></tr>
+          <tr><td>la charcuterie</td><td>los embutidos</td></tr>
+          <tr><td>le jambon</td><td>el jamón</td></tr>
+          <tr><td>le saucisson</td><td>el salchichón</td></tr>
+          <tr><td>le beurre</td><td>la mantequilla</td></tr>
+          <tr><td>la pâtisserie</td><td>la pastelería</td></tr>
+          <tr><td>les viennoiseries</td><td>la bollería</td></tr>
+          <tr><td>un croissant</td><td>un cruasán</td></tr>
+          <tr><td>une viennoiserie au chocolat</td><td>una napolitana de chocolate</td></tr>
+          <tr><td>un escargot aux raisins</td><td>una caracola con pasas</td></tr>
+          <tr><td>les churros</td><td>los churros</td></tr>
+          <tr><td>les sucres</td><td>los azúcares</td></tr>
+          <tr><td>les boissons rafraîchissantes</td><td>las bebidas refrescantes</td></tr>
+          <tr><td>un steak</td><td>un bistec</td></tr>
+          <tr><td>une côtelette</td><td>una chuleta</td></tr>
+          <tr><td>une saucisse</td><td>una salchicha</td></tr>
+          <tr><td>les produits laitiers</td><td>los productos lácteos</td></tr>
+          <tr><td>un yaourt</td><td>un yogur</td></tr>
+          <tr><td>la boisson</td><td>la bebida</td></tr>
+          <tr><td>les jus</td><td>los zumos</td></tr>
+          <tr><td>le vin</td><td>el vino</td></tr>
+          <tr><td>les féculents</td><td>las féculas</td></tr>
+          <tr><td>les pommes de terre</td><td>las patatas</td></tr>
+          <tr><td>le fruit</td><td>la fruta</td></tr>
+          <tr><td>une poire</td><td>una pera</td></tr>
+          <tr><td>une pomme</td><td>una manzana</td></tr>
+          <tr><td>un melon</td><td>un melón</td></tr>
+          <tr><td>une orange</td><td>una naranja</td></tr>
+          <tr><td>un citron</td><td>un limón</td></tr>
+          <tr><td>une banane</td><td>un plátano</td></tr>
+          <tr><td>les fraises</td><td>las fresas</td></tr>
+          <tr><td>les framboises</td><td>las frambuesas</td></tr>
+          <tr><td>les cerises</td><td>las cerezas</td></tr>
+          <tr><td>les raisins</td><td>las uvas</td></tr>
+          <tr><td>les prunes</td><td>las ciruelas</td></tr>
+          <tr><td>un abricot</td><td>un albaricoque</td></tr>
+          <tr><td>un kiwi</td><td>un kiwi</td></tr>
+          <tr><td>une pêche</td><td>un melocotón</td></tr>
+          <tr><td>le légume</td><td>la verdura</td></tr>
+          <tr><td>le chou-fleur</td><td>la coliflor</td></tr>
+          <tr><td>la laitue</td><td>la lechuga</td></tr>
+          <tr><td>les épinards</td><td>las espinacas</td></tr>
+          <tr><td>les carottes</td><td>las zanahorias</td></tr>
+          <tr><td>les haricots verts</td><td>las judías verdes</td></tr>
+          <tr><td>les endives</td><td>las endibias</td></tr>
+          <tr><td>les tomates</td><td>los tomates</td></tr>
+          <tr><td>l&#x27;aubergine</td><td>la berenjena</td></tr>
+          <tr><td>la courgette</td><td>el calabacín</td></tr>
+          <tr><td>les poivrons</td><td>los pimientos</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const originalItems = [
+  {
+    "prompt": "les aliments",
+    "answer": "los alimentos",
+    "direction": "colonne 1 -> colonne 2"
+  },
+  {
+    "prompt": "la nourriture",
+    "answer": "la comida",
+    "direction": "colonne 1 -> colonne 2"
+  },
+  {
+    "prompt": "la nourriture saine",
+    "answer": "la comida sana",
+    "direction": "colonne 1 -> colonne 2"
+  },
+  {
+    "prompt": "les hamburgers",
+    "answer": "las hamburguesas",
+    "direction": "colonne 1 -> colonne 2"
+  },
+  {
+    "prompt": "les frites",
+    "answer": "las patatas fritas",
+    "direction": "colonne 1 -> colonne 2"
+  },
+  {
+    "prompt": "la pizza",
+    "answer": "la pizza",
+    "direction": "colonne 1 -> colonne 2"
+  },
+  {
+    "prompt": "les ingrédients",
+    "answer": "los ingredientes",
+    "direction": "colonne 1 -> colonne 2"
+  },
+  {
+    "prompt": "les desserts",
+    "answer": "los postres",
+    "direction": "colonne 1 -> colonne 2"
+  },
+  {
+    "prompt": "les donuts",
+    "answer": "los dónuts",
+    "direction": "colonne 1 -> colonne 2"
+  },
+  {
+    "prompt": "les glaces",
+    "answer": "los helados",
+    "direction": "colonne 1 -> colonne 2"
+  },
+  {
+    "prompt": "les olives",
+    "answer": "las aceitunas",
+    "direction": "colonne 1 -> colonne 2"
+  },
+  {
+    "prompt": "la sauce",
+    "answer": "la salsa",
+    "direction": "colonne 1 -> colonne 2"
+  },
+  {
+    "prompt": "l'ananas",
+    "answer": "la piña",
+    "direction": "colonne 1 -> colonne 2"
+  },
+  {
+    "prompt": "la vanille",
+    "answer": "la vainilla",
+    "direction": "colonne 1 -> colonne 2"
+  },
+  {
+    "prompt": "les fruits",
+    "answer": "las frutas",
+    "direction": "colonne 1 -> colonne 2"
+  },
+  {
+    "prompt": "les légumes",
+    "answer": "las verduras",
+    "direction": "colonne 1 -> colonne 2"
+  },
+  {
+    "prompt": "la viande",
+    "answer": "la carne",
+    "direction": "colonne 1 -> colonne 2"
+  },
+  {
+    "prompt": "le poisson",
+    "answer": "el pescado",
+    "direction": "colonne 1 -> colonne 2"
+  },
+  {
+    "prompt": "l'eau",
+    "answer": "el agua",
+    "direction": "colonne 1 -> colonne 2"
+  },
+  {
+    "prompt": "le riz",
+    "answer": "el arroz",
+    "direction": "colonne 1 -> colonne 2"
+  },
+  {
+    "prompt": "les pâtes",
+    "answer": "la pasta",
+    "direction": "colonne 1 -> colonne 2"
+  },
+  {
+    "prompt": "les céréales",
+    "answer": "los cereales",
+    "direction": "colonne 1 -> colonne 2"
+  },
+  {
+    "prompt": "le pain",
+    "answer": "el pan",
+    "direction": "colonne 1 -> colonne 2"
+  },
+  {
+    "prompt": "le lait",
+    "answer": "la leche",
+    "direction": "colonne 1 -> colonne 2"
+  },
+  {
+    "prompt": "le fromage",
+    "answer": "el queso",
+    "direction": "colonne 1 -> colonne 2"
+  },
+  {
+    "prompt": "les yaourts",
+    "answer": "los yogures",
+    "direction": "colonne 1 -> colonne 2"
+  },
+  {
+    "prompt": "l'huile d'olive",
+    "answer": "el aceite de oliva",
+    "direction": "colonne 1 -> colonne 2"
+  },
+  {
+    "prompt": "les légumineuses",
+    "answer": "las legumbres",
+    "direction": "colonne 1 -> colonne 2"
+  },
+  {
+    "prompt": "les fruits secs",
+    "answer": "los frutos secos",
+    "direction": "colonne 1 -> colonne 2"
+  },
+  {
+    "prompt": "les poissons",
+    "answer": "los pescados",
+    "direction": "colonne 1 -> colonne 2"
+  },
+  {
+    "prompt": "les fruits de mer",
+    "answer": "los mariscos",
+    "direction": "colonne 1 -> colonne 2"
+  },
+  {
+    "prompt": "les oeufs",
+    "answer": "los huevos",
+    "direction": "colonne 1 -> colonne 2"
+  },
+  {
+    "prompt": "les viandes maigres",
+    "answer": "las carnes magras",
+    "direction": "colonne 1 -> colonne 2"
+  },
+  {
+    "prompt": "le poulet",
+    "answer": "el pollo",
+    "direction": "colonne 1 -> colonne 2"
+  },
+  {
+    "prompt": "les viandes grasses",
+    "answer": "las carnes grasas",
+    "direction": "colonne 1 -> colonne 2"
+  },
+  {
+    "prompt": "la viande de boeuf",
+    "answer": "la carne de vaca",
+    "direction": "colonne 1 -> colonne 2"
+  },
+  {
+    "prompt": "la viande de porc",
+    "answer": "la carne de cerdo",
+    "direction": "colonne 1 -> colonne 2"
+  },
+  {
+    "prompt": "la charcuterie",
+    "answer": "los embutidos",
+    "direction": "colonne 1 -> colonne 2"
+  },
+  {
+    "prompt": "le jambon",
+    "answer": "el jamón",
+    "direction": "colonne 1 -> colonne 2"
+  },
+  {
+    "prompt": "le saucisson",
+    "answer": "el salchichón",
+    "direction": "colonne 1 -> colonne 2"
+  },
+  {
+    "prompt": "le beurre",
+    "answer": "la mantequilla",
+    "direction": "colonne 1 -> colonne 2"
+  },
+  {
+    "prompt": "la pâtisserie",
+    "answer": "la pastelería",
+    "direction": "colonne 1 -> colonne 2"
+  },
+  {
+    "prompt": "les viennoiseries",
+    "answer": "la bollería",
+    "direction": "colonne 1 -> colonne 2"
+  },
+  {
+    "prompt": "un croissant",
+    "answer": "un cruasán",
+    "direction": "colonne 1 -> colonne 2"
+  },
+  {
+    "prompt": "une viennoiserie au chocolat",
+    "answer": "una napolitana de chocolate",
+    "direction": "colonne 1 -> colonne 2"
+  },
+  {
+    "prompt": "un escargot aux raisins",
+    "answer": "una caracola con pasas",
+    "direction": "colonne 1 -> colonne 2"
+  },
+  {
+    "prompt": "les churros",
+    "answer": "los churros",
+    "direction": "colonne 1 -> colonne 2"
+  },
+  {
+    "prompt": "les sucres",
+    "answer": "los azúcares",
+    "direction": "colonne 1 -> colonne 2"
+  },
+  {
+    "prompt": "les boissons rafraîchissantes",
+    "answer": "las bebidas refrescantes",
+    "direction": "colonne 1 -> colonne 2"
+  },
+  {
+    "prompt": "un steak",
+    "answer": "un bistec",
+    "direction": "colonne 1 -> colonne 2"
+  },
+  {
+    "prompt": "une côtelette",
+    "answer": "una chuleta",
+    "direction": "colonne 1 -> colonne 2"
+  },
+  {
+    "prompt": "une saucisse",
+    "answer": "una salchicha",
+    "direction": "colonne 1 -> colonne 2"
+  },
+  {
+    "prompt": "les produits laitiers",
+    "answer": "los productos lácteos",
+    "direction": "colonne 1 -> colonne 2"
+  },
+  {
+    "prompt": "un yaourt",
+    "answer": "un yogur",
+    "direction": "colonne 1 -> colonne 2"
+  },
+  {
+    "prompt": "la boisson",
+    "answer": "la bebida",
+    "direction": "colonne 1 -> colonne 2"
+  },
+  {
+    "prompt": "les jus",
+    "answer": "los zumos",
+    "direction": "colonne 1 -> colonne 2"
+  },
+  {
+    "prompt": "le vin",
+    "answer": "el vino",
+    "direction": "colonne 1 -> colonne 2"
+  },
+  {
+    "prompt": "les féculents",
+    "answer": "las féculas",
+    "direction": "colonne 1 -> colonne 2"
+  },
+  {
+    "prompt": "les pommes de terre",
+    "answer": "las patatas",
+    "direction": "colonne 1 -> colonne 2"
+  },
+  {
+    "prompt": "le fruit",
+    "answer": "la fruta",
+    "direction": "colonne 1 -> colonne 2"
+  },
+  {
+    "prompt": "une poire",
+    "answer": "una pera",
+    "direction": "colonne 1 -> colonne 2"
+  },
+  {
+    "prompt": "une pomme",
+    "answer": "una manzana",
+    "direction": "colonne 1 -> colonne 2"
+  },
+  {
+    "prompt": "un melon",
+    "answer": "un melón",
+    "direction": "colonne 1 -> colonne 2"
+  },
+  {
+    "prompt": "une orange",
+    "answer": "una naranja",
+    "direction": "colonne 1 -> colonne 2"
+  },
+  {
+    "prompt": "un citron",
+    "answer": "un limón",
+    "direction": "colonne 1 -> colonne 2"
+  },
+  {
+    "prompt": "une banane",
+    "answer": "un plátano",
+    "direction": "colonne 1 -> colonne 2"
+  },
+  {
+    "prompt": "les fraises",
+    "answer": "las fresas",
+    "direction": "colonne 1 -> colonne 2"
+  },
+  {
+    "prompt": "les framboises",
+    "answer": "las frambuesas",
+    "direction": "colonne 1 -> colonne 2"
+  },
+  {
+    "prompt": "les cerises",
+    "answer": "las cerezas",
+    "direction": "colonne 1 -> colonne 2"
+  },
+  {
+    "prompt": "les raisins",
+    "answer": "las uvas",
+    "direction": "colonne 1 -> colonne 2"
+  },
+  {
+    "prompt": "les prunes",
+    "answer": "las ciruelas",
+    "direction": "colonne 1 -> colonne 2"
+  },
+  {
+    "prompt": "un abricot",
+    "answer": "un albaricoque",
+    "direction": "colonne 1 -> colonne 2"
+  },
+  {
+    "prompt": "un kiwi",
+    "answer": "un kiwi",
+    "direction": "colonne 1 -> colonne 2"
+  },
+  {
+    "prompt": "une pêche",
+    "answer": "un melocotón",
+    "direction": "colonne 1 -> colonne 2"
+  },
+  {
+    "prompt": "le légume",
+    "answer": "la verdura",
+    "direction": "colonne 1 -> colonne 2"
+  },
+  {
+    "prompt": "le chou-fleur",
+    "answer": "la coliflor",
+    "direction": "colonne 1 -> colonne 2"
+  },
+  {
+    "prompt": "la laitue",
+    "answer": "la lechuga",
+    "direction": "colonne 1 -> colonne 2"
+  },
+  {
+    "prompt": "les épinards",
+    "answer": "las espinacas",
+    "direction": "colonne 1 -> colonne 2"
+  },
+  {
+    "prompt": "les carottes",
+    "answer": "las zanahorias",
+    "direction": "colonne 1 -> colonne 2"
+  },
+  {
+    "prompt": "les haricots verts",
+    "answer": "las judías verdes",
+    "direction": "colonne 1 -> colonne 2"
+  },
+  {
+    "prompt": "les endives",
+    "answer": "las endibias",
+    "direction": "colonne 1 -> colonne 2"
+  },
+  {
+    "prompt": "les tomates",
+    "answer": "los tomates",
+    "direction": "colonne 1 -> colonne 2"
+  },
+  {
+    "prompt": "l'aubergine",
+    "answer": "la berenjena",
+    "direction": "colonne 1 -> colonne 2"
+  },
+  {
+    "prompt": "la courgette",
+    "answer": "el calabacín",
+    "direction": "colonne 1 -> colonne 2"
+  },
+  {
+    "prompt": "les poivrons",
+    "answer": "los pimientos",
+    "direction": "colonne 1 -> colonne 2"
+  }
+];
+    let items = [];
+    let index = 0;
+    let score = 0;
+    let answered = false;
+    const maxScore = originalItems.length;
+
+    const word = document.querySelector("#word");
+    const direction = document.querySelector("#direction");
+    const progress = document.querySelector("#progress");
+    const form = document.querySelector("#answer-form");
+    const answerInput = document.querySelector("#answer");
+    const feedback = document.querySelector("#feedback");
+    const scoreCard = document.querySelector(".score");
+    const percent = document.querySelector("#percent");
+    const points = document.querySelector("#points");
+    const nextButton = document.querySelector("#next-button");
+    const restartButton = document.querySelector("#restart-button");
+    const revisionToggle = document.querySelector("#revision-toggle");
+    const revisionTable = document.querySelector("#revision-table");
+
+    function shuffle(array) {
+      const copy = [...array];
+      for (let i = copy.length - 1; i > 0; i -= 1) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [copy[i], copy[j]] = [copy[j], copy[i]];
+      }
+      return copy;
+    }
+
+    function normalize(value) {
+      return value.trim().toLocaleLowerCase("fr");
+    }
+
+    const optionalLeadingArticles = [
+      "de la", "de l'", "l'", "d'",
+      "le", "la", "les", "un", "une", "des", "du", "de", "au", "aux",
+      "ce", "cet", "cette", "ces",
+      "mon", "ma", "mes", "ton", "ta", "tes", "son", "sa", "ses",
+      "notre", "nos", "votre", "vos", "leur", "leurs",
+      "the", "a", "an", "some", "any", "this", "that", "these", "those",
+      "my", "your", "his", "her", "its", "our", "their"
+    ];
+
+    function escapeRegExp(value) {
+      const specialChars = new Set(["\\", "^", "$", ".", "*", "+", "?", "(", ")", "[", "]", "{", "}", "|"]);
+      return [...value].map((char) => specialChars.has(char) ? "\\" + char : char).join("");
+    }
+
+    function stripLeadingArticle(value) {
+      let result = value;
+      for (const article of optionalLeadingArticles) {
+        const pattern = article.endsWith("'")
+          ? new RegExp(`^${escapeRegExp(article)}\\s*`, "u")
+          : new RegExp(`^${escapeRegExp(article)}\\s+`, "u");
+        result = result.replace(pattern, "");
+      }
+      return result.trim();
+    }
+
+    function leadingArticle(value) {
+      for (const article of optionalLeadingArticles) {
+        const pattern = article.endsWith("'")
+          ? new RegExp(`^${escapeRegExp(article)}\\s*`, "u")
+          : new RegExp(`^${escapeRegExp(article)}\\s+`, "u");
+        if (pattern.test(value)) return article;
+      }
+      return "";
+    }
+
+    function missingArticle(given, expected) {
+      const cleanGiven = normalize(given);
+      const cleanExpected = normalize(expected);
+      if (cleanGiven === cleanExpected) return "";
+      if (stripLeadingArticle(cleanGiven) !== stripLeadingArticle(cleanExpected)) return "";
+      const expectedArticle = leadingArticle(cleanExpected);
+      const givenArticle = leadingArticle(cleanGiven);
+      return expectedArticle && !givenArticle ? expectedArticle : "";
+    }
+
+    function levenshtein(a, b) {
+      const rows = Array.from({ length: a.length + 1 }, () => []);
+      for (let i = 0; i <= a.length; i += 1) rows[i][0] = i;
+      for (let j = 0; j <= b.length; j += 1) rows[0][j] = j;
+      for (let i = 1; i <= a.length; i += 1) {
+        for (let j = 1; j <= b.length; j += 1) {
+          const cost = a[i - 1] === b[j - 1] ? 0 : 1;
+          rows[i][j] = Math.min(
+            rows[i - 1][j] + 1,
+            rows[i][j - 1] + 1,
+            rows[i - 1][j - 1] + cost
+          );
+        }
+      }
+      return rows[a.length][b.length];
+    }
+
+    function answerScore(given, expected) {
+      const cleanGiven = normalize(given);
+      const cleanExpected = normalize(expected);
+      if (cleanGiven === cleanExpected) return 1;
+      if (stripLeadingArticle(cleanGiven) === stripLeadingArticle(cleanExpected)) return 1;
+      if (!cleanGiven && cleanExpected) return 0;
+      const distance = levenshtein(cleanGiven, cleanExpected);
+      return distance === 1 ? 0.25 : 0;
+    }
+
+    function formatScore(value) {
+      return Number.isInteger(value) ? String(value) : value.toFixed(2);
+    }
+
+    function scoreBand(pct) {
+      if (pct < 25) return "dark-red";
+      if (pct <= 50) return "light-red";
+      if (pct < 75) return "yellow";
+      return "dark-green";
+    }
+
+    function updateScore() {
+      const rawPct = maxScore === 0 ? 0 : (score / maxScore) * 100;
+      const pct = Math.round(rawPct);
+      percent.textContent = `${pct} %`;
+      points.textContent = `${formatScore(score)} / ${maxScore} points`;
+      scoreCard.classList.remove("score-dark-red", "score-light-red", "score-yellow", "score-dark-green");
+      scoreCard.classList.add(`score-${scoreBand(rawPct)}`);
+    }
+
+    function setRevisionAccess(enabled) {
+      revisionToggle.disabled = !enabled;
+      if (!enabled) {
+        revisionTable.hidden = true;
+        revisionToggle.textContent = "Réviser la table";
+      }
+    }
+
+    function renderQuestion() {
+      if (index >= items.length) {
+      word.textContent = "Terminé";
+        direction.textContent = "";
+        progress.textContent = `${items.length} / ${items.length}`;
+        const rawPct = maxScore === 0 ? 0 : (score / maxScore) * 100;
+        feedback.className = `final-score ${scoreBand(rawPct)}`;
+        feedback.innerHTML = `Score final : <strong>${formatScore(score)} / ${maxScore}</strong>.`;
+        answerInput.disabled = true;
+        nextButton.disabled = true;
+        return;
+      }
+
+      const item = items[index];
+      word.textContent = item.prompt;
+      direction.textContent = item.direction;
+      progress.textContent = `${index + 1} / ${items.length}`;
+      answerInput.value = "";
+      answerInput.disabled = false;
+      nextButton.disabled = true;
+      answered = false;
+      setRevisionAccess(false);
+      feedback.className = "";
+      feedback.textContent = "Entre la traduction, puis valide.";
+      answerInput.focus();
+    }
+
+    function classify(value) {
+      return value === 1 ? "good" : "bad";
+    }
+
+    function escapeHtml(value) {
+      return value.replace(/[&<>"']/g, (char) => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#039;"
+      }[char]));
+    }
+
+    function answerMarkup(given, scoreValue, expected) {
+      const shownAnswer = escapeHtml(given.trim() || "(vide)");
+      const article = missingArticle(given, expected);
+      const correction = article
+        ? `<div class="correction">(${escapeHtml(article)})</div>`
+        : (scoreValue === 1 ? "" : `<div class="correction">${escapeHtml(expected)}</div>`);
+      return `
+        <div>
+          <div class="answer-row ${classify(scoreValue)}">
+            <span class="student-answer">${shownAnswer}</span>
+            <span>${formatScore(scoreValue)} / 1</span>
+          </div>
+          ${correction}
+        </div>
+      `;
+    }
+
+    form.addEventListener("submit", (event) => {
+      event.preventDefault();
+      if (answered || index >= items.length) return;
+
+      const item = items[index];
+      const givenAnswer = answerInput.value;
+      const gained = answerScore(givenAnswer, item.answer);
+      score += gained;
+      answered = true;
+      nextButton.disabled = false;
+      updateScore();
+      setRevisionAccess(gained < 1);
+
+      feedback.innerHTML = `
+        <div class="result-grid">
+          ${answerMarkup(givenAnswer, gained, item.answer)}
+          <div>Total gagné : <strong>${formatScore(gained)} / 1</strong></div>
+        </div>
+      `;
+    });
+
+    nextButton.addEventListener("click", () => {
+      if (index < items.length) {
+        index += 1;
+        renderQuestion();
+      }
+    });
+
+    restartButton.addEventListener("click", () => {
+      items = shuffle(originalItems);
+      index = 0;
+      score = 0;
+      updateScore();
+      renderQuestion();
+    });
+
+    revisionToggle.addEventListener("click", () => {
+      if (revisionToggle.disabled) return;
+      revisionTable.hidden = !revisionTable.hidden;
+      revisionToggle.textContent = revisionTable.hidden ? "Réviser la table" : "Masquer la table";
+    });
+
+    items = shuffle(originalItems);
+    updateScore();
+    renderQuestion();
+  </script>
+</body>
+</html>
