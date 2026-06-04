@@ -1,89 +1,96 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>📚 QUIZZES DE NATHAN</title>
+  <title>QUIZZES DE NATHAN</title>
   <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: 'Poppins', sans-serif; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; display: flex; align-items: center; justify-content: center; color: #fff; padding: 20px; }
-    .container { max-width: 680px; width: 100%; }
-    h1 { font-family: 'Bangers', cursive; font-size: 3rem; text-align: center; background: linear-gradient(to right, #f7971e, #ffd200); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; letter-spacing: 3px; margin-bottom: 10px; }
-    .subtitle { text-align: center; color: #a78bfa; font-size: 0.95rem; margin-bottom: 28px; }
+    .container { max-width: 720px; width: 100%; }
+    h1 { font-family: 'Bangers', cursive; font-size: clamp(2.6rem, 10vw, 4rem); text-align: center; background: linear-gradient(to right, #f7971e, #ffd200); -webkit-background-clip: text; color: transparent; background-clip: text; letter-spacing: 3px; margin-bottom: 10px; }
+    .subtitle { text-align: center; color: #a78bfa; font-size: 0.95rem; margin-bottom: 28px; font-weight: 600; }
     .quiz-list { display: flex; flex-direction: column; gap: 12px; }
     .quiz-item { background: rgba(255,255,255,0.07); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.15); border-radius: 14px; padding: 18px 22px; text-decoration: none; color: #fff; display: flex; align-items: center; justify-content: space-between; gap: 14px; transition: all 0.2s; }
     .quiz-item:hover { background: rgba(124,58,237,0.25); border-color: #7c3aed; transform: translateY(-2px); }
-    .quiz-info { display: flex; flex-direction: column; gap: 4px; }
+    .quiz-info { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
     .quiz-date { font-family: 'Bangers', cursive; font-size: 1.3rem; letter-spacing: 1px; color: #ffd200; }
-    .quiz-time { font-size: 0.85rem; color: #c4b5fd; }
+    .quiz-time { font-size: 0.85rem; color: #c4b5fd; overflow-wrap: anywhere; }
     .quiz-arrow { font-size: 1.5rem; color: #a78bfa; flex-shrink: 0; }
-    footer { text-align: center; margin-top: 28px; font-size: 0.78rem; color: #6b7280; }
+    footer { text-align: center; margin-top: 28px; font-size: 0.78rem; color: #9ca3af; }
   </style>
 </head>
 <body>
 <div class="container">
-  <h1>📚 QUIZZES DE NATHAN</h1>
-  <p class="subtitle">Choisis un quiz pour t'entraîner ⚡</p>
+  <h1>QUIZZES DE NATHAN</h1>
+  <p class="subtitle">Choisis un quiz pour t'entrainer</p>
   <div class="quiz-list">
-    <a class="quiz-item" href="quiz-2026-05-18_19-32-Aliments ES-FR.html">
+    <a class="quiz-item" href="quiz-2026-06-04_17-40-Commonwealth p89-90-91.html">
       <div class="quiz-info">
-        <span class="quiz-date">18 mai 2026</span>
-        <span class="quiz-time">19:32 - Aliments (espagnol -> francais)</span>
+        <span class="quiz-date">4 juin 2026</span>
+        <span class="quiz-time">17:40 - Commonwealth p89-90-91</span>
       </div>
-      <span class="quiz-arrow">&gt;</span>
+      <span class="quiz-arrow">â–¶</span>
     </a>
     <a class="quiz-item" href="quiz-2026-05-18_19-32-Aliments FR-ES.html">
       <div class="quiz-info">
         <span class="quiz-date">18 mai 2026</span>
-        <span class="quiz-time">19:32 - Aliments (francais -> espagnol)</span>
+        <span class="quiz-time">19:32 - Aliments FR-ES</span>
       </div>
-      <span class="quiz-arrow">&gt;</span>
+      <span class="quiz-arrow">â–¶</span>
     </a>
-    <a class="quiz-item" href="quiz-2026-05-16_22-44-ENG-FR Commonwealth p88.html">
+    <a class="quiz-item" href="quiz-2026-05-18_19-32-Aliments ES-FR.html">
       <div class="quiz-info">
-        <span class="quiz-date">16 mai 2026</span>
-        <span class="quiz-time">🕐 22:44 — Commonwealth p88 (anglais → français)</span>
+        <span class="quiz-date">18 mai 2026</span>
+        <span class="quiz-time">19:32 - Aliments ES-FR</span>
       </div>
-      <span class="quiz-arrow">▶</span>
+      <span class="quiz-arrow">â–¶</span>
     </a>
     <a class="quiz-item" href="quiz-2026-05-16_22-44-FR-EN Commonwealth p88.html">
       <div class="quiz-info">
         <span class="quiz-date">16 mai 2026</span>
-        <span class="quiz-time">🕐 22:44 — Commonwealth p88 (français → anglais)</span>
+        <span class="quiz-time">22:44 - FR-EN Commonwealth p88</span>
       </div>
-      <span class="quiz-arrow">▶</span>
+      <span class="quiz-arrow">â–¶</span>
+    </a>
+    <a class="quiz-item" href="quiz-2026-05-16_22-44-ENG-FR Commonwealth p88.html">
+      <div class="quiz-info">
+        <span class="quiz-date">16 mai 2026</span>
+        <span class="quiz-time">22:44 - ENG-FR Commonwealth p88</span>
+      </div>
+      <span class="quiz-arrow">â–¶</span>
     </a>
     <a class="quiz-item" href="quiz-2026-05-16_21-41-Imperatif.html">
       <div class="quiz-info">
         <span class="quiz-date">16 mai 2026</span>
-        <span class="quiz-time">🕐 21:41 — Imperatif</span>
+        <span class="quiz-time">21:41 - Imperatif</span>
       </div>
-      <span class="quiz-arrow">▶</span>
+      <span class="quiz-arrow">â–¶</span>
     </a>
     <a class="quiz-item" href="quiz-2026-05-16_19-28-Commonwealth p88.html">
       <div class="quiz-info">
         <span class="quiz-date">16 mai 2026</span>
-        <span class="quiz-time">🕐 19:28 — Commonwealth p88</span>
+        <span class="quiz-time">19:28 - Commonwealth p88</span>
       </div>
-      <span class="quiz-arrow">▶</span>
+      <span class="quiz-arrow">â–¶</span>
     </a>
     <a class="quiz-item" href="quiz-2026-05-03_18-43.html">
       <div class="quiz-info">
         <span class="quiz-date">3 mai 2026</span>
-        <span class="quiz-time">🕐 18:43</span>
+        <span class="quiz-time">18:43 - Quiz Nathan</span>
       </div>
-      <span class="quiz-arrow">▶</span>
+      <span class="quiz-arrow">â–¶</span>
     </a>
     <a class="quiz-item" href="quiz-2026-04-23_13-35.html">
       <div class="quiz-info">
         <span class="quiz-date">23 avril 2026</span>
-        <span class="quiz-time">🕐 13:35</span>
+        <span class="quiz-time">13:35 - Quiz Nathan</span>
       </div>
-      <span class="quiz-arrow">▶</span>
+      <span class="quiz-arrow">â–¶</span>
     </a>
   </div>
-  <footer>Mise à jour automatique à chaque nouveau quiz généré</footer>
+  <footer>Mise a jour automatique a chaque nouveau quiz genere</footer>
 </div>
 </body>
 </html>
