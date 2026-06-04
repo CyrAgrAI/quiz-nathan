@@ -1,0 +1,813 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Quiz Commonwealth anglais-français p89-90-91</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f7f3ea;
+      --panel: #fffdf8;
+      --ink: #22302f;
+      --muted: #66716f;
+      --line: #d8d0c2;
+      --accent: #1d4ed8;
+      --accent-dark: #1e3a8a;
+      --bad: #9b2d30;
+      --good: #1f7a45;
+      --answer-correction: #1f7a45;
+      --review-answer-size: clamp(1.45rem, 3.5vw, 2.1rem);
+      --review-label-size: clamp(1.2rem, 2.5vw, 1.65rem);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    main {
+      width: min(980px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 28px 0 42px;
+    }
+
+    header {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 20px;
+      padding-bottom: 18px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(1.8rem, 2.6vw, 2.6rem);
+      line-height: 1.05;
+      letter-spacing: 0;
+    }
+
+    .score {
+      display: grid;
+      gap: 4px;
+      min-width: 170px;
+      padding: 12px 14px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel);
+      text-align: right;
+    }
+
+    .score.score-dark-red {
+      background: #711d22;
+      color: #ffffff;
+      border-color: #711d22;
+    }
+
+    .score.score-light-red {
+      background: #f4b5b8;
+      color: #4a1115;
+      border-color: #d9858a;
+    }
+
+    .score.score-yellow {
+      background: #f1d45b;
+      color: #332b06;
+      border-color: #c7aa27;
+    }
+
+    .score.score-dark-green {
+      background: #14633a;
+      color: #ffffff;
+      border-color: #14633a;
+    }
+
+    .score.score-dark-red .muted,
+    .score.score-dark-green .muted {
+      color: rgba(255, 255, 255, 0.78);
+    }
+
+    .score.score-light-red .muted,
+    .score.score-yellow .muted {
+      color: currentColor;
+    }
+
+    .score strong {
+      font-size: 1.35rem;
+    }
+
+    .muted {
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    .quiz {
+      margin-top: 24px;
+      padding: 22px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel);
+    }
+
+    .prompt {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      margin-bottom: 18px;
+    }
+
+    .word {
+      font-size: clamp(2rem, 8vw, 4.8rem);
+      font-weight: 800;
+      line-height: 1;
+    }
+
+    .progress {
+      color: var(--muted);
+      white-space: nowrap;
+    }
+
+    form {
+      display: grid;
+      grid-template-columns: max-content max-content max-content;
+      column-gap: 28px;
+      row-gap: 10px;
+      align-items: center;
+    }
+
+    label {
+      display: inline-grid;
+      grid-template-columns: auto 230px;
+      align-items: center;
+      gap: 6px;
+      font-weight: 700;
+    }
+
+    .form-particle {
+      font-size: clamp(1.35rem, 3vw, 2rem);
+      font-weight: 850;
+      line-height: 1;
+    }
+
+    input {
+      width: 100%;
+      min-height: 48px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 10px 12px;
+      font: inherit;
+      background: #fff;
+      color: var(--ink);
+    }
+
+    input:focus {
+      outline: 3px solid rgba(15, 123, 108, 0.22);
+      border-color: var(--accent);
+    }
+
+    .actions {
+      grid-column: 1;
+      grid-row: 2;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 0;
+    }
+
+    .submit-button {
+      align-self: center;
+      background: var(--good);
+      color: white;
+    }
+
+    .submit-button:hover {
+      background: #145c33;
+    }
+
+    .next-button {
+      align-self: center;
+      background: var(--accent);
+      color: white;
+    }
+
+    .next-button:hover {
+      background: var(--accent-dark);
+    }
+
+    .restart-button {
+      background: #dedbd3;
+      color: var(--ink);
+      border: 1px solid var(--line);
+    }
+
+    .restart-button:hover {
+      background: #cbc6ba;
+    }
+
+    button {
+      min-height: 42px;
+      border: 0;
+      border-radius: 6px;
+      padding: 10px 16px;
+      background: var(--accent);
+      color: white;
+      font: inherit;
+      font-weight: 750;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: var(--accent-dark);
+    }
+
+    button:disabled {
+      cursor: not-allowed;
+      opacity: 0.48;
+    }
+
+    button.secondary {
+      border: 1px solid var(--line);
+      background: #fff;
+      color: var(--ink);
+    }
+
+    button.secondary:hover {
+      background: #f0ebe1;
+    }
+
+    #feedback {
+      min-height: 72px;
+      margin-top: 18px;
+      padding: 14px;
+      border-radius: 8px;
+      background: #f1eee6;
+      color: var(--ink);
+    }
+
+    .result-grid {
+      display: grid;
+      gap: 12px;
+    }
+
+    .good {
+      background: #ddf3e4;
+      border-color: rgba(31, 122, 69, 0.35);
+      color: var(--good);
+      font-weight: 750;
+    }
+
+    .bad {
+      background: #fde6e7;
+      border-color: rgba(155, 45, 48, 0.35);
+      color: var(--bad);
+      font-weight: 750;
+    }
+
+    .answer-row {
+      border: 1px solid;
+      border-radius: 8px;
+      padding: 10px 12px;
+    }
+
+    .student-answer {
+      display: inline-block;
+      font-size: var(--review-answer-size);
+      font-weight: 850;
+      line-height: 1.1;
+    }
+
+    .good .student-answer {
+      color: var(--good);
+    }
+
+    .bad .student-answer {
+      color: var(--bad);
+    }
+
+    .correction {
+      display: block;
+      margin-top: 4px;
+      color: var(--answer-correction);
+      font-size: var(--review-answer-size);
+      font-weight: 850;
+      line-height: 1.1;
+    }
+
+    .final-score {
+      color: #ffffff;
+      font-size: 1.2rem;
+      font-weight: 800;
+    }
+
+    .final-score.dark-red {
+      background: #711d22;
+    }
+
+    .final-score.light-red {
+      background: #f4b5b8;
+      color: #4a1115;
+    }
+
+    .final-score.yellow {
+      background: #f1d45b;
+      color: #332b06;
+    }
+
+    .final-score.dark-green {
+      background: #14633a;
+    }
+
+    section {
+      margin-top: 26px;
+    }
+
+    .revision-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      margin-bottom: 12px;
+    }
+
+    h2 {
+      margin: 0;
+      font-size: 1.3rem;
+      letter-spacing: 0;
+    }
+
+    [hidden] {
+      display: none !important;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 420px;
+    }
+
+    th, td {
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--line);
+      text-align: left;
+    }
+
+    th {
+      background: #ece5d8;
+      font-size: 0.92rem;
+      text-transform: uppercase;
+    }
+
+    tr:last-child td {
+      border-bottom: 0;
+    }
+
+    @media (max-width: 760px) {
+      header, .prompt, .revision-head {
+        align-items: stretch;
+        flex-direction: column;
+      }
+
+      .score {
+        text-align: left;
+      }
+
+      form {
+        grid-template-columns: 1fr;
+      }
+
+      label {
+        grid-template-columns: auto minmax(0, 1fr);
+      }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <div>
+        <h1>Quiz Commonwealth anglais-français p89-90-91</h1>
+        <p class="muted">Une question, une case, correction instantanée.</p>
+      </div>
+      <div class="score" aria-live="polite">
+        <span class="muted">Note instantanée</span>
+        <strong id="percent">0 %</strong>
+        <span id="points" class="muted">0 / 19 points</span>
+      </div>
+    </header>
+
+    <div class="quiz">
+      <div class="prompt">
+        <div>
+          <div id="direction" class="muted"></div>
+          <div id="word" class="word"></div>
+        </div>
+        <div id="progress" class="progress"></div>
+      </div>
+
+      <form id="answer-form" autocomplete="off">
+        <label>
+          <input id="answer" type="text" inputmode="text" spellcheck="false" aria-label="Réponse" required>
+        </label>
+        <button class="submit-button" type="submit">Valider</button>
+        <button class="next-button" id="next-button" type="button">Question suivante</button>
+        <div class="actions">
+          <button class="restart-button" id="restart-button" type="button">Recommencer</button>
+        </div>
+      </form>
+
+      <div id="feedback" aria-live="polite">Entre la traduction, puis valide.</div>
+    </div>
+
+    <section>
+      <div class="revision-head">
+        <h2>Table de révision</h2>
+        <button class="secondary" id="revision-toggle" type="button" disabled>Réviser la table</button>
+      </div>
+      <div class="table-wrap" id="revision-table" hidden>
+        <table>
+          <thead>
+            <tr>
+              <th>Colonne 1</th>
+              <th>Colonne 2</th>
+            </tr>
+          </thead>
+          <tbody>
+          <tr><td>membership</td><td>adhésion</td></tr>
+          <tr><td>common values</td><td>valeurs communes</td></tr>
+          <tr><td>join</td><td>intégrer</td></tr>
+          <tr><td>promote</td><td>promouvoir</td></tr>
+          <tr><td>become a member</td><td>devenir membre</td></tr>
+          <tr><td>on an equal footing / equal status</td><td>à égalité</td></tr>
+          <tr><td>be bound by</td><td>être lié par</td></tr>
+          <tr><td>coral reef</td><td>récif corallien</td></tr>
+          <tr><td>beach</td><td>plage</td></tr>
+          <tr><td>palm tree</td><td>palmier</td></tr>
+          <tr><td>citizen</td><td>citoyen</td></tr>
+          <tr><td>$100 thousand</td><td>cent mille dollars</td></tr>
+          <tr><td>$50 million</td><td>cinquante millions de dollars</td></tr>
+          <tr><td>thousands of dollars</td><td>des milliers de dollars</td></tr>
+          <tr><td>joy</td><td>bonheur</td></tr>
+          <tr><td>host city</td><td>ville organisatrice</td></tr>
+          <tr><td>youth</td><td>jeunesse</td></tr>
+          <tr><td>together</td><td>ensemble</td></tr>
+          <tr><td>take place</td><td>avoir lieu, se dérouler</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const originalItems = [
+  {
+    "prompt": "membership",
+    "answer": "adhésion",
+    "direction": "colonne 1 -> colonne 2"
+  },
+  {
+    "prompt": "common values",
+    "answer": "valeurs communes",
+    "direction": "colonne 1 -> colonne 2"
+  },
+  {
+    "prompt": "join",
+    "answer": "intégrer",
+    "direction": "colonne 1 -> colonne 2"
+  },
+  {
+    "prompt": "promote",
+    "answer": "promouvoir",
+    "direction": "colonne 1 -> colonne 2"
+  },
+  {
+    "prompt": "become a member",
+    "answer": "devenir membre",
+    "direction": "colonne 1 -> colonne 2"
+  },
+  {
+    "prompt": "on an equal footing / equal status",
+    "answer": "à égalité",
+    "direction": "colonne 1 -> colonne 2"
+  },
+  {
+    "prompt": "be bound by",
+    "answer": "être lié par",
+    "direction": "colonne 1 -> colonne 2"
+  },
+  {
+    "prompt": "coral reef",
+    "answer": "récif corallien",
+    "direction": "colonne 1 -> colonne 2"
+  },
+  {
+    "prompt": "beach",
+    "answer": "plage",
+    "direction": "colonne 1 -> colonne 2"
+  },
+  {
+    "prompt": "palm tree",
+    "answer": "palmier",
+    "direction": "colonne 1 -> colonne 2"
+  },
+  {
+    "prompt": "citizen",
+    "answer": "citoyen",
+    "direction": "colonne 1 -> colonne 2"
+  },
+  {
+    "prompt": "$100 thousand",
+    "answer": "cent mille dollars",
+    "direction": "colonne 1 -> colonne 2"
+  },
+  {
+    "prompt": "$50 million",
+    "answer": "cinquante millions de dollars",
+    "direction": "colonne 1 -> colonne 2"
+  },
+  {
+    "prompt": "thousands of dollars",
+    "answer": "des milliers de dollars",
+    "direction": "colonne 1 -> colonne 2"
+  },
+  {
+    "prompt": "joy",
+    "answer": "bonheur",
+    "direction": "colonne 1 -> colonne 2"
+  },
+  {
+    "prompt": "host city",
+    "answer": "ville organisatrice",
+    "direction": "colonne 1 -> colonne 2"
+  },
+  {
+    "prompt": "youth",
+    "answer": "jeunesse",
+    "direction": "colonne 1 -> colonne 2"
+  },
+  {
+    "prompt": "together",
+    "answer": "ensemble",
+    "direction": "colonne 1 -> colonne 2"
+  },
+  {
+    "prompt": "take place",
+    "answer": "avoir lieu, se dérouler",
+    "direction": "colonne 1 -> colonne 2"
+  }
+];
+    let items = [];
+    let index = 0;
+    let score = 0;
+    let answered = false;
+    const maxScore = originalItems.length;
+
+    const word = document.querySelector("#word");
+    const direction = document.querySelector("#direction");
+    const progress = document.querySelector("#progress");
+    const form = document.querySelector("#answer-form");
+    const answerInput = document.querySelector("#answer");
+    const feedback = document.querySelector("#feedback");
+    const scoreCard = document.querySelector(".score");
+    const percent = document.querySelector("#percent");
+    const points = document.querySelector("#points");
+    const nextButton = document.querySelector("#next-button");
+    const restartButton = document.querySelector("#restart-button");
+    const revisionToggle = document.querySelector("#revision-toggle");
+    const revisionTable = document.querySelector("#revision-table");
+
+    function shuffle(array) {
+      const copy = [...array];
+      for (let i = copy.length - 1; i > 0; i -= 1) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [copy[i], copy[j]] = [copy[j], copy[i]];
+      }
+      return copy;
+    }
+
+    function normalize(value) {
+      return value.trim().toLocaleLowerCase("fr");
+    }
+
+    const optionalLeadingArticles = [
+      "de la", "de l'", "l'", "d'",
+      "le", "la", "les", "un", "une", "des", "du", "de", "au", "aux",
+      "ce", "cet", "cette", "ces",
+      "mon", "ma", "mes", "ton", "ta", "tes", "son", "sa", "ses",
+      "notre", "nos", "votre", "vos", "leur", "leurs",
+      "the", "a", "an", "some", "any", "this", "that", "these", "those",
+      "my", "your", "his", "her", "its", "our", "their"
+    ];
+
+    function escapeRegExp(value) {
+      const specialChars = new Set(["\\", "^", "$", ".", "*", "+", "?", "(", ")", "[", "]", "{", "}", "|"]);
+      return [...value].map((char) => specialChars.has(char) ? "\\" + char : char).join("");
+    }
+
+    function stripLeadingArticle(value) {
+      let result = value;
+      for (const article of optionalLeadingArticles) {
+        const pattern = article.endsWith("'")
+          ? new RegExp(`^${escapeRegExp(article)}\\s*`, "u")
+          : new RegExp(`^${escapeRegExp(article)}\\s+`, "u");
+        result = result.replace(pattern, "");
+      }
+      return result.trim();
+    }
+
+    function leadingArticle(value) {
+      for (const article of optionalLeadingArticles) {
+        const pattern = article.endsWith("'")
+          ? new RegExp(`^${escapeRegExp(article)}\\s*`, "u")
+          : new RegExp(`^${escapeRegExp(article)}\\s+`, "u");
+        if (pattern.test(value)) return article;
+      }
+      return "";
+    }
+
+    function missingArticle(given, expected) {
+      const cleanGiven = normalize(given);
+      const cleanExpected = normalize(expected);
+      if (cleanGiven === cleanExpected) return "";
+      if (stripLeadingArticle(cleanGiven) !== stripLeadingArticle(cleanExpected)) return "";
+      const expectedArticle = leadingArticle(cleanExpected);
+      const givenArticle = leadingArticle(cleanGiven);
+      return expectedArticle && !givenArticle ? expectedArticle : "";
+    }
+
+    function levenshtein(a, b) {
+      const rows = Array.from({ length: a.length + 1 }, () => []);
+      for (let i = 0; i <= a.length; i += 1) rows[i][0] = i;
+      for (let j = 0; j <= b.length; j += 1) rows[0][j] = j;
+      for (let i = 1; i <= a.length; i += 1) {
+        for (let j = 1; j <= b.length; j += 1) {
+          const cost = a[i - 1] === b[j - 1] ? 0 : 1;
+          rows[i][j] = Math.min(
+            rows[i - 1][j] + 1,
+            rows[i][j - 1] + 1,
+            rows[i - 1][j - 1] + cost
+          );
+        }
+      }
+      return rows[a.length][b.length];
+    }
+
+    function answerScore(given, expected) {
+      const cleanGiven = normalize(given);
+      const cleanExpected = normalize(expected);
+      if (cleanGiven === cleanExpected) return 1;
+      if (stripLeadingArticle(cleanGiven) === stripLeadingArticle(cleanExpected)) return 1;
+      if (!cleanGiven && cleanExpected) return 0;
+      const distance = levenshtein(cleanGiven, cleanExpected);
+      return distance === 1 ? 0.25 : 0;
+    }
+
+    function formatScore(value) {
+      return Number.isInteger(value) ? String(value) : value.toFixed(2);
+    }
+
+    function scoreBand(pct) {
+      if (pct < 25) return "dark-red";
+      if (pct <= 50) return "light-red";
+      if (pct < 75) return "yellow";
+      return "dark-green";
+    }
+
+    function updateScore() {
+      const rawPct = maxScore === 0 ? 0 : (score / maxScore) * 100;
+      const pct = Math.round(rawPct);
+      percent.textContent = `${pct} %`;
+      points.textContent = `${formatScore(score)} / ${maxScore} points`;
+      scoreCard.classList.remove("score-dark-red", "score-light-red", "score-yellow", "score-dark-green");
+      scoreCard.classList.add(`score-${scoreBand(rawPct)}`);
+    }
+
+    function setRevisionAccess(enabled) {
+      revisionToggle.disabled = !enabled;
+      if (!enabled) {
+        revisionTable.hidden = true;
+        revisionToggle.textContent = "Réviser la table";
+      }
+    }
+
+    function renderQuestion() {
+      if (index >= items.length) {
+      word.textContent = "Terminé";
+        direction.textContent = "";
+        progress.textContent = `${items.length} / ${items.length}`;
+        const rawPct = maxScore === 0 ? 0 : (score / maxScore) * 100;
+        feedback.className = `final-score ${scoreBand(rawPct)}`;
+        feedback.innerHTML = `Score final : <strong>${formatScore(score)} / ${maxScore}</strong>.`;
+        answerInput.disabled = true;
+        nextButton.disabled = true;
+        return;
+      }
+
+      const item = items[index];
+      word.textContent = item.prompt;
+      direction.textContent = item.direction;
+      progress.textContent = `${index + 1} / ${items.length}`;
+      answerInput.value = "";
+      answerInput.disabled = false;
+      nextButton.disabled = true;
+      answered = false;
+      setRevisionAccess(false);
+      feedback.className = "";
+      feedback.textContent = "Entre la traduction, puis valide.";
+      answerInput.focus();
+    }
+
+    function classify(value) {
+      return value === 1 ? "good" : "bad";
+    }
+
+    function escapeHtml(value) {
+      return value.replace(/[&<>"']/g, (char) => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#039;"
+      }[char]));
+    }
+
+    function answerMarkup(given, scoreValue, expected) {
+      const shownAnswer = escapeHtml(given.trim() || "(vide)");
+      const article = missingArticle(given, expected);
+      const correction = article
+        ? `<div class="correction">(${escapeHtml(article)})</div>`
+        : (scoreValue === 1 ? "" : `<div class="correction">${escapeHtml(expected)}</div>`);
+      return `
+        <div>
+          <div class="answer-row ${classify(scoreValue)}">
+            <span class="student-answer">${shownAnswer}</span>
+            <span>${formatScore(scoreValue)} / 1</span>
+          </div>
+          ${correction}
+        </div>
+      `;
+    }
+
+    form.addEventListener("submit", (event) => {
+      event.preventDefault();
+      if (answered || index >= items.length) return;
+
+      const item = items[index];
+      const givenAnswer = answerInput.value;
+      const gained = answerScore(givenAnswer, item.answer);
+      score += gained;
+      answered = true;
+      nextButton.disabled = false;
+      updateScore();
+      setRevisionAccess(gained < 1);
+
+      feedback.innerHTML = `
+        <div class="result-grid">
+          ${answerMarkup(givenAnswer, gained, item.answer)}
+          <div>Total gagné : <strong>${formatScore(gained)} / 1</strong></div>
+        </div>
+      `;
+    });
+
+    nextButton.addEventListener("click", () => {
+      if (index < items.length) {
+        index += 1;
+        renderQuestion();
+      }
+    });
+
+    restartButton.addEventListener("click", () => {
+      items = shuffle(originalItems);
+      index = 0;
+      score = 0;
+      updateScore();
+      renderQuestion();
+    });
+
+    revisionToggle.addEventListener("click", () => {
+      if (revisionToggle.disabled) return;
+      revisionTable.hidden = !revisionTable.hidden;
+      revisionToggle.textContent = revisionTable.hidden ? "Réviser la table" : "Masquer la table";
+    });
+
+    items = shuffle(originalItems);
+    updateScore();
+    renderQuestion();
+  </script>
+</body>
+</html>
