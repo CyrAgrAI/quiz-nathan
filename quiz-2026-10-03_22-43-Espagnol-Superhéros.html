@@ -302,6 +302,12 @@
       line-height: 1.1;
     }
 
+    .spelling-warning {
+      margin-top: 6px;
+      color: #9a5800;
+      font-weight: 750;
+    }
+
     .final-score {
       color: #ffffff;
       font-size: 1.2rem;
@@ -672,6 +678,11 @@
       return value.trim().toLocaleLowerCase("fr");
     }
 
+    function normalizeSpelling(value) {
+      return value.normalize("NFD").replace(/[\u0300-\u036f]/gu, "")
+        .replace(/[-‐‑‒–—]/gu, " ").replace(/\s+/gu, " ").trim();
+    }
+
     const optionalLeadingArticles = [
       "de la", "de l'", "l'", "d'",
       "le", "la", "les", "un", "une", "des", "du", "de", "au", "aux",
@@ -735,14 +746,65 @@
       return rows[a.length][b.length];
     }
 
+    function expectedAnswers(expected) {
+      const cleanExpected = normalize(expected);
+      const answers = [cleanExpected];
+      const withoutExplanation = cleanExpected.replace(/\s+\([^()]+\)$/u, "");
+      if (withoutExplanation !== cleanExpected) answers.push(withoutExplanation);
+      return answers;
+    }
+
+    function matchesAnswer(given, answer) {
+      return given === answer || stripLeadingArticle(given) === stripLeadingArticle(answer);
+    }
+
+    function missingPluralAgreement(given, expected) {
+      const expectedWords = normalizeSpelling(expected).split(" ");
+      const givenWords = normalizeSpelling(given).split(" ");
+      const pluralDeterminers = new Set(["les", "des", "ces", "mes", "tes", "ses", "nos", "vos", "leurs", "los", "las", "unos", "unas", "these", "those"]);
+      if (pluralDeterminers.has(expectedWords[0])) {
+        if (pluralDeterminers.has(givenWords[0])) givenWords.shift();
+        expectedWords.shift();
+        if (givenWords.length !== expectedWords.length) return false;
+        let missing = false;
+        for (let i = 0; i < expectedWords.length; i += 1) {
+          if (givenWords[i] === expectedWords[i]) continue;
+          if (!expectedWords[i].endsWith("s") || givenWords[i] !== expectedWords[i].slice(0, -1)) return false;
+          missing = true;
+        }
+        return missing;
+      }
+
+      const subject = expectedWords[0];
+      if (givenWords[0] !== subject || expectedWords.length !== 2 || givenWords.length !== 2) return false;
+      if (subject === "we" || subject === "they") {
+        const verb = expectedWords[1];
+        return givenWords[1] === verb + "s" || givenWords[1] === verb + "es"
+          || (verb.endsWith("y") && givenWords[1] === verb.slice(0, -1) + "ies");
+      }
+      const pluralEndings = {
+        "ils": ["ent"], "elles": ["ent"], "nous": ["ons"], "vous": ["ez"],
+        "ellos": ["an", "en"], "ellas": ["an", "en"],
+        "nosotros": ["amos", "emos", "imos"], "nosotras": ["amos", "emos", "imos"],
+        "vosotros": ["ais", "eis", "is"], "vosotras": ["ais", "eis", "is"],
+        "ustedes": ["an", "en"]
+      };
+      for (const ending of pluralEndings[subject] || []) {
+        if (!expectedWords[1].endsWith(ending)) continue;
+        const stem = expectedWords[1].slice(0, -ending.length);
+        if (stem.length >= 3 && ["", "e", "es", "a", "as", "o"].some((suffix) => givenWords[1] === stem + suffix)) return true;
+      }
+      return false;
+    }
+
     function answerScore(given, expected) {
       const cleanGiven = normalize(given);
-      const cleanExpected = normalize(expected);
-      if (cleanGiven === cleanExpected) return 1;
-      if (stripLeadingArticle(cleanGiven) === stripLeadingArticle(cleanExpected)) return 1;
-      if (!cleanGiven && cleanExpected) return 0;
-      const distance = levenshtein(cleanGiven, cleanExpected);
-      return distance === 1 ? 0.25 : 0;
+      const answers = expectedAnswers(expected);
+      if (answers.some((answer) => matchesAnswer(cleanGiven, answer))) return 1;
+      if (answers.some((answer) => matchesAnswer(normalizeSpelling(cleanGiven), normalizeSpelling(answer)))) return 1;
+      if (answers.some((answer) => missingPluralAgreement(cleanGiven, answer))) return 0.5;
+      if (!cleanGiven) return 0;
+      return answers.some((answer) => levenshtein(cleanGiven, answer) === 1) ? 0.25 : 0;
     }
 
     function formatScore(value) {
@@ -838,6 +900,12 @@
       const correction = article
         ? `<div class="correction">(${escapeHtml(article)})</div>`
         : (scoreValue === 1 ? "" : `<div class="correction">${escapeHtml(expected)}</div>`);
+      const spellingWarning = scoreValue === 1 && !expectedAnswers(expected).some((answer) => matchesAnswer(normalize(given), answer))
+        ? `<div class="spelling-warning">⚠️ Attention : compté juste, mais erreur d’orthographe. Réponse attendue : ${escapeHtml(expected)}.</div>`
+        : "";
+      const agreementWarning = scoreValue === 0.5
+        ? `<div class="spelling-warning">⚠️ Attention : erreur d’accord au pluriel, 0,5 point.</div>`
+        : "";
       return `
         <div>
           <div class="answer-row ${classify(scoreValue)}">
@@ -845,6 +913,8 @@
             <span>${formatScore(scoreValue)} / 1</span>
           </div>
           ${correction}
+          ${spellingWarning}
+          ${agreementWarning}
         </div>
       `;
     }
