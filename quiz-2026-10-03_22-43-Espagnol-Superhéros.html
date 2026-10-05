@@ -109,6 +109,18 @@
       font-size: 0.95rem;
     }
 
+    .email-status {
+      margin: 16px 0 0;
+      padding: 10px 14px;
+      border: 1px solid transparent;
+      border-radius: 10px;
+      font-size: 0.95rem;
+      font-weight: 650;
+    }
+    .email-status.sending { display: block; color: #6541a5; background: #f4efff; border-color: #d7c6ff; }
+    .email-status.sent { display: block; color: #14633a; background: #eaf7ee; border-color: #a7d8b5; }
+    .email-status.error { display: block; color: #8f1d24; background: #fff0f0; border-color: #edb5b8; }
+
     .quiz {
       margin-top: 24px;
       padding: 22px;
@@ -438,7 +450,7 @@
       </form>
 
       <div id="feedback" aria-live="polite">Entre la traduction, puis valide.</div>
-      <p id="email-status" class="muted" aria-live="polite" hidden></p>
+      <p id="email-status" class="email-status" role="status" aria-live="polite" hidden></p>
     </div>
 
     <section>
@@ -840,16 +852,17 @@
       emailSent = true;
       const pct = Math.round(score / maxScore * 100);
       const stars = pct >= 90 ? "⭐⭐⭐⭐⭐" : pct >= 75 ? "⭐⭐⭐⭐" : pct >= 55 ? "⭐⭐⭐" : pct >= 35 ? "⭐⭐" : "⭐";
+      emailStatus.className = "email-status sending";
       emailStatus.hidden = false;
-      emailStatus.textContent = "Envoi du rapport en cours…";
+      emailStatus.textContent = "📧 Envoi du rapport en cours…";
       fetch(APPS_SCRIPT_URL, {
         method: "POST",
         mode: "no-cors",
         headers: { "Content-Type": "text/plain" },
         body: JSON.stringify({ score, total: maxScore, pct, stars, date: new Date().toLocaleString("fr-FR"), dest: DEST_EMAIL, mots_rates: wrongAnswers })
       })
-        .then(() => { emailStatus.textContent = "Rapport transmis au service email pour " + DEST_EMAIL; })
-        .catch(() => { emailStatus.textContent = "Envoi du rapport impossible. Vérifie la connexion et l’URL Apps Script."; });
+        .then(() => { emailStatus.className = "email-status sent"; emailStatus.textContent = "✅ Rapport envoyé à " + DEST_EMAIL; })
+        .catch(() => { emailStatus.className = "email-status error"; emailStatus.textContent = "⚠️ Erreur envoi — vérifie l’URL Apps Script"; });
     }
 
     function renderQuestion() {
@@ -956,6 +969,7 @@
       score = 0;
       wrongAnswers = [];
       emailSent = false;
+      emailStatus.className = "email-status";
       emailStatus.hidden = true;
       emailStatus.textContent = "";
       updateScore();
