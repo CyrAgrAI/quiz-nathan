@@ -10,5 +10,65 @@
 .quiz-prefix--violet { color:#c084fc; } .quiz-prefix--red { color:#f87171; } .quiz-prefix--blue { color:#60a5fa; } .quiz-prefix--green { color:#4ade80; }
 .quiz-prefix--french { color:transparent; background:linear-gradient(90deg,#2563eb 0 33.333%,#fff 33.333% 66.666%,#ef4444 66.666% 100%); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; }
 .quiz-date { font-size:.85rem; color:#c4b5fd; } .quiz-icon { width:1.5em; height:1em; vertical-align:-.1em; margin-right:.2em; } .quiz-arrow { color:#a78bfa; } footer { text-align:center; margin-top:28px; font-size:.78rem; color:#9ca3af; }
+.catalogue-search { background:rgba(124,58,237,.18); border:1px solid rgba(196,181,253,.3); border-radius:10px; padding:14px; margin-bottom:16px; }
+.catalogue-search h2 { font-family:'Bangers',cursive; color:#ffd200; font-size:1.5rem; letter-spacing:1px; margin:0 0 10px; }
+.search-controls { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; } .search-field { display:flex; flex-direction:column; gap:4px; font-size:.8rem; color:#c4b5fd; }
+.search-field--text { grid-column:1 / -1; } .search-field input,.search-field select { width:100%; min-height:42px; padding:8px; border-radius:7px; border:1px solid #a78bfa; background:#24243e; color:#fff; font:inherit; }
+.search-field input:focus-visible,.search-field select:focus-visible { outline:2px solid #ffd200; outline-offset:2px; } .search-field select:disabled { opacity:.55; cursor:not-allowed; }
+.search-status { font-size:.8rem; color:#c4b5fd; margin:10px 0 0; } .search-empty { text-align:center; color:#c4b5fd; padding:20px; } [hidden] { display:none !important; }
 </style></head>
-<body><main class="container"><h1>Mes quiz — Elève TEST</h1><p class="subtitle">Choisis un quiz pour t’entraîner</p><div class="quiz-list"><a class="quiz-item" href="quiz-2026-10-06_10-34-Conjugaison_Estar%20Llamarse.html"><div class="quiz-info"><span class="quiz-title"><svg class="quiz-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m16 3 5 5-12 12-6 1 1-6Z"/><path d="m14 5 5 5"/></svg> <span class="quiz-prefix quiz-prefix--violet">Conjugaison</span> Estar Llamarse</span><span class="quiz-date">6 octobre 2026 à 10:34</span></div><span class="quiz-arrow">▶</span></a></div><footer>Quiz de révision</footer></main></body></html>
+<body><main class="container"><h1>Mes quiz — Elève TEST</h1>
+<section class="catalogue-search" aria-labelledby="search-title">
+<h2 id="search-title">Rechercher un quiz</h2>
+<div class="search-controls">
+<label class="search-field search-field--text">Recherche<input id="search-text" type="search" placeholder="Titre, thème, langue…" autocomplete="off"></label>
+<label class="search-field">Correspondance<select id="search-mode"><option value="partial">Mot partiel</option><option value="whole">Mot entier</option></select></label>
+<label class="search-field">Type / thème<select id="search-category"><option value="">Tous</option></select></label>
+<label class="search-field">Langue<select id="search-language"><option value="">Toutes</option></select></label>
+<label class="search-field">Format<select id="search-format" aria-describedby="format-help"><option value="">Tous</option></select></label>
+</div><p id="format-help" class="search-status">Quiz / QCM concerne le vocabulaire.</p>
+<p id="search-count" class="search-status" role="status" aria-live="polite"></p>
+</section>
+<p class="subtitle">Choisis un quiz pour t’entraîner</p><div class="quiz-list"><a class="quiz-item" data-category="conjugation" data-languages="unknown" data-format="" data-search="Conjugaison Estar Llamarse" href="quiz-2026-10-06_10-34-Conjugaison_Estar%20Llamarse.html"><div class="quiz-info"><span class="quiz-title"><svg class="quiz-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m16 3 5 5-12 12-6 1 1-6Z"/><path d="m14 5 5 5"/></svg> <span class="quiz-prefix quiz-prefix--violet">Conjugaison</span> Estar Llamarse</span><span class="quiz-date">6 octobre 2026 à 10:34</span></div><span class="quiz-arrow">▶</span></a></div><p id="search-empty" class="search-empty" hidden>Aucun quiz ne correspond à ta recherche.</p>
+<script>
+(() => {
+  const cards = Array.from(document.querySelectorAll('.quiz-item'));
+  const text = document.getElementById('search-text');
+  const mode = document.getElementById('search-mode');
+  const category = document.getElementById('search-category');
+  const language = document.getElementById('search-language');
+  const format = document.getElementById('search-format');
+  const normalize = value => value.normalize('NFD').replace(/\p{M}/gu, '').toLocaleLowerCase('fr');
+  const words = value => normalize(value).match(/[\p{L}\p{N}]+/gu) || [];
+  const labels = { vocabulary:'Vocabulaire', conjugation:'Conjugaison', other:'Autre', es:'Espagnol', en:'Anglais', fr:'Français', unknown:'Non précisée', quiz:'Quiz', qcm:'QCM' };
+  const fill = (select, values) => {
+    [...new Set(values)].sort().forEach(value => select.add(new Option(labels[value], value)));
+  };
+  fill(category, cards.map(card => card.dataset.category));
+  fill(language, cards.flatMap(card => card.dataset.languages.split(' ')));
+  const entries = cards.map(card => ({ card, text:normalize(card.dataset.search), words:words(card.dataset.search) }));
+  function update() {
+    const candidates = cards.filter(card => (!category.value || card.dataset.category === category.value) && (!language.value || card.dataset.languages.split(' ').includes(language.value)));
+    const formats = [...new Set(candidates.map(card => card.dataset.format).filter(Boolean))].sort();
+    const previous = format.value;
+    format.length = 1;
+    fill(format, formats);
+    format.disabled = !formats.length;
+    format.value = formats.includes(previous) ? previous : '';
+    document.getElementById('format-help').textContent = format.disabled ? 'Format indisponible pour cette sélection.' : 'Quiz / QCM concerne le vocabulaire.';
+    const terms = words(text.value);
+    let count = 0;
+    entries.forEach(entry => {
+      const matchesText = terms.every(term => mode.value === 'whole' ? entry.words.includes(term) : entry.text.includes(term));
+      const visible = candidates.includes(entry.card) && (!format.value || entry.card.dataset.format === format.value) && matchesText;
+      entry.card.hidden = !visible;
+      if (visible) count++;
+    });
+    document.getElementById('search-count').textContent = `${count} quiz affiché${count === 1 ? '' : 's'} sur ${cards.length}`;
+    document.getElementById('search-empty').hidden = count !== 0;
+  }
+  [text, mode, category, language, format].forEach(control => control.addEventListener('input', update));
+  update();
+})();
+</script>
+<footer>Quiz de révision</footer></main></body></html>
