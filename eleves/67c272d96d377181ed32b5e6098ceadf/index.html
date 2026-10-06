@@ -21,7 +21,7 @@
 .icon-select-button { display:flex; align-items:center; justify-content:space-between; gap:6px; width:100%; min-height:34px; padding:4px 6px; border:1px solid #a78bfa; border-radius:6px; background:#24243e; color:#fff; font:inherit; text-align:left; cursor:pointer; }
 .icon-select-button:focus-visible { outline:2px solid #ffd200; outline-offset:2px; }
 .icon-select-current { display:flex; align-items:center; gap:6px; min-width:0; overflow:hidden; white-space:nowrap; text-overflow:ellipsis; }
-.icon-select-image { width:26px; height:26px; object-fit:contain; flex:none; }
+.icon-select-image { width:26px; height:26px; object-fit:contain; flex:none; } .icon-select-flag { width:26px; height:18px; object-fit:cover; flex:none; border-radius:2px; }
 .icon-select-list { position:absolute; z-index:5; top:calc(100% + 3px); left:0; right:0; max-height:180px; overflow:auto; padding:3px; border:1px solid #a78bfa; border-radius:6px; background:#24243e; box-shadow:0 4px 12px #0008; }
 .icon-select-option { display:flex; align-items:center; gap:6px; width:100%; padding:4px; border:0; border-radius:4px; background:transparent; color:#fff; font:inherit; text-align:left; cursor:pointer; }
 .icon-select-option:hover,.icon-select-option:focus-visible,.icon-select-option[aria-selected="true"] { outline:none; background:rgba(124,58,237,.4); }
@@ -34,12 +34,12 @@
 <label class="search-field search-field--text">Recherche<input id="search-text" type="search" placeholder="Titre, thème, langue…" autocomplete="off"></label>
 <label class="search-field">Correspondance<select id="search-mode"><option value="partial">🔎 Mot partiel</option><option value="whole">🎯 Mot entier</option></select></label>
 <div class="search-field"><span id="category-label">Type / thème</span><div class="icon-select" id="category-widget"><button class="icon-select-button" id="category-button" type="button" role="combobox" aria-labelledby="category-label" aria-controls="category-options" aria-haspopup="listbox" aria-expanded="false"><span class="icon-select-current" id="category-current"></span><span aria-hidden="true">▾</span></button><div class="icon-select-list" id="category-options" role="listbox" aria-labelledby="category-label" hidden></div><select class="visually-hidden" id="search-category" tabindex="-1" aria-hidden="true"><option value="">Tous les types</option></select></div></div>
-<label class="search-field">Langue<select id="search-language"><option value="">🌍 Toutes les langues</option></select></label>
+<div class="search-field"><span id="language-label">Langue</span><div class="icon-select" id="language-widget"><button class="icon-select-button" id="language-button" type="button" role="combobox" aria-labelledby="language-label" aria-controls="language-options" aria-haspopup="listbox" aria-expanded="false"><span class="icon-select-current" id="language-current"></span><span aria-hidden="true">▾</span></button><div class="icon-select-list" id="language-options" role="listbox" aria-labelledby="language-label" hidden></div><select class="visually-hidden" id="search-language" tabindex="-1" aria-hidden="true"><option value="">Toutes les langues</option></select></div></div>
 <label class="search-field">Format<select id="search-format" aria-describedby="format-help"><option value="">🧩 Tous les formats</option></select></label>
 </div><p id="format-help" class="search-status">Quiz/QCM : vocabulaire uniquement.</p>
 <p id="search-count" class="search-status" role="status" aria-live="polite"></p>
 </section>
-<p class="subtitle">Choisis un quiz pour t’entraîner</p><div class="quiz-list"><a class="quiz-item" data-category="conjugation" data-languages="es" data-format="" data-search="Conjugaison Esapgnol Pensar Poder" href="quiz-2026-10-06_15-20-Conjugaison_Esapgnol_Pensar%20Poder.html"><div class="quiz-info"><span class="quiz-title"><span class="quiz-prefix quiz-prefix--violet">Conjugaison</span> <svg class="quiz-icon" aria-hidden="true" viewBox="0 0 30 20"><path fill="#aa151b" d="M0 0h30v20H0z"/><path fill="#f1bf00" d="M0 5h30v10H0z"/></svg> Esapgnol Pensar Poder</span><span class="quiz-date">6 octobre 2026 à 15:20</span></div><span class="quiz-arrow">▶</span></a><a class="quiz-item" data-category="conjugation" data-languages="unknown" data-format="" data-search="Conjugaison Estar Llamarse" href="quiz-2026-10-06_10-34-Conjugaison_Estar%20Llamarse.html"><div class="quiz-info"><span class="quiz-title"><svg class="quiz-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m16 3 5 5-12 12-6 1 1-6Z"/><path d="m14 5 5 5"/></svg> <span class="quiz-prefix quiz-prefix--violet">Conjugaison</span> Estar Llamarse</span><span class="quiz-date">6 octobre 2026 à 10:34</span></div><span class="quiz-arrow">▶</span></a></div><p id="search-empty" class="search-empty" hidden>Aucun quiz ne correspond à ta recherche.</p>
+<p class="subtitle">Choisis un quiz pour t’entraîner</p><div class="quiz-list"><a class="quiz-item" data-category="conjugation" data-languages="es" data-format="" data-search="Conjugaison Esapgnol Pensar Poder" href="quiz-2026-10-06_15-20-Conjugaison_Esapgnol_Pensar%20Poder.html"><img class="quiz-type-icon" src="../../assets/icons/conjugaison-bd.png" alt="" aria-hidden="true" width="70" height="70"><div class="quiz-info"><span class="quiz-title"><span class="quiz-prefix quiz-prefix--violet">Conjugaison</span> <svg class="quiz-icon" aria-hidden="true" viewBox="0 0 30 20"><path fill="#aa151b" d="M0 0h30v20H0z"/><path fill="#f1bf00" d="M0 5h30v10H0z"/></svg> Esapgnol Pensar Poder</span><span class="quiz-date">6 octobre 2026 à 15:20</span></div><span class="quiz-arrow">▶</span></a><a class="quiz-item" data-category="conjugation" data-languages="unknown" data-format="" data-search="Conjugaison Estar Llamarse" href="quiz-2026-10-06_10-34-Conjugaison_Estar%20Llamarse.html"><div class="quiz-info"><span class="quiz-title"><svg class="quiz-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m16 3 5 5-12 12-6 1 1-6Z"/><path d="m14 5 5 5"/></svg> <span class="quiz-prefix quiz-prefix--violet">Conjugaison</span> Estar Llamarse</span><span class="quiz-date">6 octobre 2026 à 10:34</span></div><span class="quiz-arrow">▶</span></a></div><p id="search-empty" class="search-empty" hidden>Aucun quiz ne correspond à ta recherche.</p>
 <script>
 (() => {
   const cards = Array.from(document.querySelectorAll('.quiz-item'));
@@ -50,21 +50,40 @@
   const format = document.getElementById('search-format');
   const normalize = value => value.normalize('NFD').replace(/\p{M}/gu, '').toLocaleLowerCase('fr');
   const words = value => normalize(value).match(/[\p{L}\p{N}]+/gu) || [];
-  const labels = { vocabulary:'Vocabulaire', conjugation:'Conjugaison', other:'Autre', es:'🇪🇸 Espagnol', en:'🇬🇧 Anglais', fr:'🇫🇷 Français', unknown:'❔ Non précisée', quiz:'📝 Quiz', qcm:'☑️ QCM' };
+  const labels = { vocabulary:'Vocabulaire', conjugation:'Conjugaison', other:'Autre', es:'Espagnol', en:'Anglais', fr:'Français', unknown:'Non précisée', quiz:'📝 Quiz', qcm:'☑️ QCM' };
   const fill = (select, values) => {
     [...new Set(values)].sort().forEach(value => select.add(new Option(labels[value], value)));
   };
   fill(category, cards.map(card => card.dataset.category));
   fill(language, [...cards.flatMap(card => card.dataset.languages.split(' ')), 'en', 'fr']);
-  const entries = cards.map(card => ({ card, text:normalize(card.dataset.search), words:words(card.dataset.search) }));
-  function update() {
-    const candidates = cards.filter(card => (!category.value || card.dataset.category === category.value) && (!language.value || card.dataset.languages.split(' ').includes(language.value)));
   const categoryWidget = document.getElementById('category-widget');
   const categoryButton = document.getElementById('category-button');
   const categoryCurrent = document.getElementById('category-current');
   const categoryOptions = document.getElementById('category-options');
   const categoryIcons = { conjugation:'../../assets/icons/conjugaison-bd.png', vocabulary:'../../assets/icons/quiz-vocabulaire-bd.png' };
   const categorySymbols = { '':'📂', other:'🗂️' };
+  const languageWidget = document.getElementById('language-widget');
+  const languageButton = document.getElementById('language-button');
+  const languageCurrent = document.getElementById('language-current');
+  const languageOptions = document.getElementById('language-options');
+  const languageFlags = {
+    es:'<svg viewBox="0 0 30 20" aria-hidden="true"><path fill="#aa151b" d="M0 0h30v20H0z"/><path fill="#f1bf00" d="M0 5h30v10H0z"/></svg>',
+    en:'<svg viewBox="0 0 60 30" aria-hidden="true"><path fill="#012169" d="M0 0h60v30H0z"/><path stroke="#fff" stroke-width="6" d="m0 0 60 30M60 0 0 30"/><path stroke="#c8102e" stroke-width="2" d="m0 0 60 30M60 0 0 30"/><path stroke="#fff" stroke-width="10" d="M30 0v30M0 15h60"/><path stroke="#c8102e" stroke-width="6" d="M30 0v30M0 15h60"/></svg>',
+    fr:'<svg viewBox="0 0 30 20" aria-hidden="true"><path fill="#002395" d="M0 0h10v20H0z"/><path fill="#fff" d="M10 0h10v20H10z"/><path fill="#ed2939" d="M20 0h10v20H20z"/></svg>'
+  };
+  function languageVisual(value) {
+    if (languageFlags[value]) {
+      const template = document.createElement('template');
+      template.innerHTML = languageFlags[value];
+      const flag = template.content.firstElementChild;
+      flag.classList.add('icon-select-flag');
+      return flag;
+    }
+    const symbol = document.createElement('span');
+    symbol.setAttribute('aria-hidden', 'true');
+    symbol.textContent = value === 'unknown' ? '❔' : '🌍';
+    return symbol;
+  }
   function categoryVisual(value) {
     if (categoryIcons[value]) {
       const image = document.createElement('img');
@@ -136,6 +155,56 @@
   });
   document.addEventListener('click', event => { if (!categoryWidget.contains(event.target)) closeCategory(); });
   renderCategory();
+  function renderLanguage() {
+    const selected = language.options[language.selectedIndex];
+    languageCurrent.replaceChildren(languageVisual(language.value));
+    const label = document.createElement('span');
+    label.textContent = selected.textContent;
+    languageCurrent.append(label);
+    languageOptions.replaceChildren(...Array.from(language.options, option => {
+      const item = document.createElement('button');
+      item.className = 'icon-select-option';
+      item.type = 'button';
+      item.tabIndex = -1;
+      item.setAttribute('role', 'option');
+      item.setAttribute('aria-selected', String(option.value === language.value));
+      item.dataset.value = option.value;
+      item.append(languageVisual(option.value));
+      const text = document.createElement('span');
+      text.textContent = option.textContent;
+      item.append(text);
+      return item;
+    }));
+  }
+  function closeLanguage() { languageOptions.hidden = true; languageButton.setAttribute('aria-expanded', 'false'); }
+  function openLanguage() { languageOptions.hidden = false; languageButton.setAttribute('aria-expanded', 'true'); languageOptions.querySelector('[aria-selected="true"]')?.focus(); }
+  languageButton.addEventListener('click', () => languageOptions.hidden ? openLanguage() : closeLanguage());
+  languageButton.addEventListener('keydown', event => {
+    if (event.key === 'ArrowDown' || event.key === 'ArrowUp') { event.preventDefault(); openLanguage(); }
+    if (event.key === 'Escape') closeLanguage();
+  });
+  languageOptions.addEventListener('click', event => {
+    const item = event.target.closest('[role="option"]');
+    if (!item) return;
+    language.value = item.dataset.value;
+    renderLanguage();
+    closeLanguage();
+    language.dispatchEvent(new Event('input', { bubbles:true }));
+    languageButton.focus();
+  });
+  languageOptions.addEventListener('keydown', event => {
+    const items = Array.from(languageOptions.querySelectorAll('[role="option"]'));
+    const index = items.indexOf(document.activeElement);
+    if (event.key === 'Escape') { event.preventDefault(); closeLanguage(); languageButton.focus(); }
+    if (event.key === 'ArrowDown' || event.key === 'ArrowUp') { event.preventDefault(); items[(index + (event.key === 'ArrowDown' ? 1 : items.length - 1)) % items.length]?.focus(); }
+    if (event.key === 'Home') { event.preventDefault(); items[0]?.focus(); }
+    if (event.key === 'End') { event.preventDefault(); items.at(-1)?.focus(); }
+  });
+  document.addEventListener('click', event => { if (!languageWidget.contains(event.target)) closeLanguage(); });
+  renderLanguage();
+  const entries = cards.map(card => ({ card, text:normalize(card.dataset.search), words:words(card.dataset.search) }));
+  function update() {
+    const candidates = cards.filter(card => (!category.value || card.dataset.category === category.value) && (!language.value || card.dataset.languages.split(' ').includes(language.value)));
     const formats = [...new Set(candidates.map(card => card.dataset.format).filter(Boolean))].sort();
     const previous = format.value;
     format.length = 1;
