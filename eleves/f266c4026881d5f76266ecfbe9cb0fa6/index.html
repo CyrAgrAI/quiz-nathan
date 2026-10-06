@@ -17,6 +17,15 @@
 .search-controls { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:6px; } .search-field { display:flex; flex-direction:column; gap:2px; font-size:.68rem; line-height:1.1; color:#c4b5fd; }
 .search-field--text { grid-column:span 2; } .search-field input,.search-field select { width:100%; min-height:34px; padding:5px; border-radius:6px; border:1px solid #a78bfa; background:#24243e; color:#fff; font:inherit; }
 .search-field input:focus-visible,.search-field select:focus-visible { outline:2px solid #ffd200; outline-offset:2px; } .search-field select:disabled { opacity:.55; cursor:not-allowed; }
+.icon-select { position:relative; }
+.icon-select-button { display:flex; align-items:center; justify-content:space-between; gap:6px; width:100%; min-height:34px; padding:4px 6px; border:1px solid #a78bfa; border-radius:6px; background:#24243e; color:#fff; font:inherit; text-align:left; cursor:pointer; }
+.icon-select-button:focus-visible { outline:2px solid #ffd200; outline-offset:2px; }
+.icon-select-current { display:flex; align-items:center; gap:6px; min-width:0; overflow:hidden; white-space:nowrap; text-overflow:ellipsis; }
+.icon-select-image { width:26px; height:26px; object-fit:contain; flex:none; }
+.icon-select-list { position:absolute; z-index:5; top:calc(100% + 3px); left:0; right:0; max-height:180px; overflow:auto; padding:3px; border:1px solid #a78bfa; border-radius:6px; background:#24243e; box-shadow:0 4px 12px #0008; }
+.icon-select-option { display:flex; align-items:center; gap:6px; width:100%; padding:4px; border:0; border-radius:4px; background:transparent; color:#fff; font:inherit; text-align:left; cursor:pointer; }
+.icon-select-option:hover,.icon-select-option:focus-visible,.icon-select-option[aria-selected="true"] { outline:none; background:rgba(124,58,237,.4); }
+.search-field .visually-hidden { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
 .search-status { font-size:.68rem; line-height:1.2; color:#c4b5fd; margin:4px 0 0; } .search-empty { text-align:center; color:#c4b5fd; padding:20px; } [hidden] { display:none !important; }
 @media(max-width:520px) { .search-controls { grid-template-columns:repeat(2,minmax(0,1fr)); gap:5px; } .search-field--text { grid-column:1 / -1; } }
 </style></head>
@@ -26,7 +35,7 @@
 <div class="search-controls">
 <label class="search-field search-field--text">Recherche<input id="search-text" type="search" placeholder="Titre, thème, langue…" autocomplete="off"></label>
 <label class="search-field">Correspondance<select id="search-mode"><option value="partial">🔎 Mot partiel</option><option value="whole">🎯 Mot entier</option></select></label>
-<label class="search-field">Type / thème<select id="search-category"><option value="">📂 Tous les types</option></select></label>
+<div class="search-field"><span id="category-label">Type / thème</span><div class="icon-select" id="category-widget"><button class="icon-select-button" id="category-button" type="button" role="combobox" aria-labelledby="category-label" aria-controls="category-options" aria-haspopup="listbox" aria-expanded="false"><span class="icon-select-current" id="category-current"></span><span aria-hidden="true">▾</span></button><div class="icon-select-list" id="category-options" role="listbox" aria-labelledby="category-label" hidden></div><select class="visually-hidden" id="search-category" tabindex="-1" aria-hidden="true"><option value="">Tous les types</option></select></div></div>
 <label class="search-field">Langue<select id="search-language"><option value="">🌍 Toutes les langues</option></select></label>
 <label class="search-field">Format<select id="search-format" aria-describedby="format-help"><option value="">🧩 Tous les formats</option></select></label>
 </div><p id="format-help" class="search-status">Quiz/QCM : vocabulaire uniquement.</p>
@@ -47,13 +56,90 @@
   const format = document.getElementById('search-format');
   const normalize = value => value.normalize('NFD').replace(/\p{M}/gu, '').toLocaleLowerCase('fr');
   const words = value => normalize(value).match(/[\p{L}\p{N}]+/gu) || [];
-  const labels = { vocabulary:'📚 Vocabulaire', conjugation:'✍️ Conjugaison', other:'🗂️ Autre', es:'🇪🇸 Espagnol', en:'🇬🇧 Anglais', fr:'🇫🇷 Français', unknown:'❔ Non précisée', quiz:'📝 Quiz', qcm:'☑️ QCM' };
+  const labels = { vocabulary:'Vocabulaire', conjugation:'Conjugaison', other:'Autre', es:'🇪🇸 Espagnol', en:'🇬🇧 Anglais', fr:'🇫🇷 Français', unknown:'❔ Non précisée', quiz:'📝 Quiz', qcm:'☑️ QCM' };
   const fill = (select, values) => {
     [...new Set(values)].sort().forEach(value => select.add(new Option(labels[value], value)));
   };
   fill(category, cards.map(card => card.dataset.category));
   fill(language, [...cards.flatMap(card => card.dataset.languages.split(' ')), 'en', 'fr']);
   const entries = cards.map(card => ({ card, text:normalize(card.dataset.search), words:words(card.dataset.search) }));
+  const categoryWidget = document.getElementById('category-widget');
+  const categoryButton = document.getElementById('category-button');
+  const categoryCurrent = document.getElementById('category-current');
+  const categoryOptions = document.getElementById('category-options');
+  const categoryIcons = { conjugation:'../../assets/icons/conjugaison-bd.png', vocabulary:'../../assets/icons/quiz-vocabulaire-bd.png' };
+  const categorySymbols = { '':'📂', other:'🗂️' };
+  function categoryVisual(value) {
+    if (categoryIcons[value]) {
+      const image = document.createElement('img');
+      image.className = 'icon-select-image';
+      image.src = categoryIcons[value];
+      image.alt = '';
+      image.setAttribute('aria-hidden', 'true');
+      return image;
+    }
+    const symbol = document.createElement('span');
+    symbol.setAttribute('aria-hidden', 'true');
+    symbol.textContent = categorySymbols[value] || '🗂️';
+    return symbol;
+  }
+  function renderCategory() {
+    const selected = category.options[category.selectedIndex];
+    categoryCurrent.replaceChildren(categoryVisual(category.value));
+    const text = document.createElement('span');
+    text.textContent = selected.textContent;
+    categoryCurrent.append(text);
+    categoryOptions.replaceChildren(...Array.from(category.options, option => {
+      const item = document.createElement('button');
+      item.className = 'icon-select-option';
+      item.type = 'button';
+      item.tabIndex = -1;
+      item.setAttribute('role', 'option');
+      item.setAttribute('aria-selected', String(option.value === category.value));
+      item.dataset.value = option.value;
+      item.append(categoryVisual(option.value));
+      const label = document.createElement('span');
+      label.textContent = option.textContent;
+      item.append(label);
+      return item;
+    }));
+  }
+  function closeCategory() {
+    categoryOptions.hidden = true;
+    categoryButton.setAttribute('aria-expanded', 'false');
+  }
+  function openCategory() {
+    categoryOptions.hidden = false;
+    categoryButton.setAttribute('aria-expanded', 'true');
+    categoryOptions.querySelector('[aria-selected="true"]')?.focus();
+  }
+  categoryButton.addEventListener('click', () => categoryOptions.hidden ? openCategory() : closeCategory());
+  categoryButton.addEventListener('keydown', event => {
+    if (event.key === 'ArrowDown' || event.key === 'ArrowUp') { event.preventDefault(); openCategory(); }
+    if (event.key === 'Escape') closeCategory();
+  });
+  categoryOptions.addEventListener('click', event => {
+    const item = event.target.closest('[role="option"]');
+    if (!item) return;
+    category.value = item.dataset.value;
+    renderCategory();
+    closeCategory();
+    category.dispatchEvent(new Event('input', { bubbles:true }));
+    categoryButton.focus();
+  });
+  categoryOptions.addEventListener('keydown', event => {
+    const items = Array.from(categoryOptions.querySelectorAll('[role="option"]'));
+    const index = items.indexOf(document.activeElement);
+    if (event.key === 'Escape') { event.preventDefault(); closeCategory(); categoryButton.focus(); }
+    if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+      event.preventDefault();
+      items[(index + (event.key === 'ArrowDown' ? 1 : items.length - 1)) % items.length]?.focus();
+    }
+    if (event.key === 'Home') { event.preventDefault(); items[0]?.focus(); }
+    if (event.key === 'End') { event.preventDefault(); items.at(-1)?.focus(); }
+  });
+  document.addEventListener('click', event => { if (!categoryWidget.contains(event.target)) closeCategory(); });
+  renderCategory();
   function update() {
     const candidates = cards.filter(card => (!category.value || card.dataset.category === category.value) && (!language.value || card.dataset.languages.split(' ').includes(language.value)));
     const formats = [...new Set(candidates.map(card => card.dataset.format).filter(Boolean))].sort();
