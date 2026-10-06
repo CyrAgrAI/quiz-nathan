@@ -23,10 +23,10 @@
 <h2 id="search-title">Rechercher un quiz</h2>
 <div class="search-controls">
 <label class="search-field search-field--text">Recherche<input id="search-text" type="search" placeholder="Titre, thème, langue…" autocomplete="off"></label>
-<label class="search-field">Correspondance<select id="search-mode"><option value="partial">Mot partiel</option><option value="whole">Mot entier</option></select></label>
-<label class="search-field">Type / thème<select id="search-category"><option value="">Tous</option></select></label>
-<label class="search-field">Langue<select id="search-language"><option value="">Toutes</option></select></label>
-<label class="search-field">Format<select id="search-format" aria-describedby="format-help"><option value="">Tous</option></select></label>
+<label class="search-field">Correspondance<select id="search-mode"><option value="partial">🔎 Mot partiel</option><option value="whole">🎯 Mot entier</option></select></label>
+<label class="search-field">Type / thème<select id="search-category"><option value="">📂 Tous les types</option></select></label>
+<label class="search-field">Langue<select id="search-language"><option value="">🌍 Toutes les langues</option></select></label>
+<label class="search-field">Format<select id="search-format" aria-describedby="format-help"><option value="">🧩 Tous les formats</option></select></label>
 </div><p id="format-help" class="search-status">Quiz/QCM : vocabulaire uniquement.</p>
 <p id="search-count" class="search-status" role="status" aria-live="polite"></p>
 </section>
@@ -41,12 +41,12 @@
   const format = document.getElementById('search-format');
   const normalize = value => value.normalize('NFD').replace(/\p{M}/gu, '').toLocaleLowerCase('fr');
   const words = value => normalize(value).match(/[\p{L}\p{N}]+/gu) || [];
-  const labels = { vocabulary:'Vocabulaire', conjugation:'Conjugaison', other:'Autre', es:'Espagnol', en:'Anglais', fr:'Français', unknown:'Non précisée', quiz:'Quiz', qcm:'QCM' };
+  const labels = { vocabulary:'📚 Vocabulaire', conjugation:'✍️ Conjugaison', other:'🗂️ Autre', es:'🇪🇸 Espagnol', en:'🇬🇧 Anglais', fr:'🇫🇷 Français', unknown:'❔ Non précisée', quiz:'📝 Quiz', qcm:'☑️ QCM' };
   const fill = (select, values) => {
     [...new Set(values)].sort().forEach(value => select.add(new Option(labels[value], value)));
   };
   fill(category, cards.map(card => card.dataset.category));
-  fill(language, cards.flatMap(card => card.dataset.languages.split(' ')));
+  fill(language, [...cards.flatMap(card => card.dataset.languages.split(' ')), 'en', 'fr']);
   const entries = cards.map(card => ({ card, text:normalize(card.dataset.search), words:words(card.dataset.search) }));
   function update() {
     const candidates = cards.filter(card => (!category.value || card.dataset.category === category.value) && (!language.value || card.dataset.languages.split(' ').includes(language.value)));
