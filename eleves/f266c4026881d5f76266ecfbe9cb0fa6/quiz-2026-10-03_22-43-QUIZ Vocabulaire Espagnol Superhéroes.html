@@ -859,7 +859,7 @@
         method: "POST",
         mode: "no-cors",
         headers: { "Content-Type": "text/plain" },
-        body: JSON.stringify({ score, total: maxScore, pct, stars, date: new Date().toLocaleString("fr-FR"), dest: DEST_EMAIL, mots_rates: wrongAnswers })
+        body: JSON.stringify({ score, total: maxScore, pct, stars, date: new Date().toLocaleString("fr-FR"), dest: DEST_EMAIL, nom_eleve: "Nathan AGRECH", mots_rates: wrongAnswers })
       })
         .then(() => { emailStatus.className = "email-status sent"; emailStatus.textContent = "✅ Rapport envoyé à " + DEST_EMAIL; })
         .catch(() => { emailStatus.className = "email-status error"; emailStatus.textContent = "⚠️ Erreur envoi — vérifie l’URL Apps Script"; });
