@@ -60,6 +60,8 @@ h1 { font-family:'Bangers',cursive; font-size:2.8rem; text-align:center; backgro
 .email-status.error { display:block; color:#fca5a5; background:rgba(239,68,68,.1); border:1px solid rgba(239,68,68,.3); }
 @media(max-width:400px) { body { padding:12px; } .card { padding:20px 14px; } h1 { font-size:2.4rem; } .restart-btn,.next-btn { padding:10px 8px; font-size:.8rem; } }
 </style>
+<script src="../../education-reporting.js"></script>
+<script>window.EducationReporting ||= {start(){},complete(){}};</script>
 </head>
 <body>
 <div class="container">
@@ -112,7 +114,7 @@ function buildQuestions() {
   });
   return shuffle(qs);
 }
-function initQuiz() {
+function initQuiz() { EducationReporting.start();
   clearTimeout(advanceTimer); advanceTimer=null;
   questions=buildQuestions(); currentIndex=correct=wrong=0; wrongAnswers=[];
   $("question-card").style.display=""; $("result-card").style.display="none"; $("email-status").className="email-status";
@@ -178,7 +180,7 @@ function showResult() {
   $("result-detail").textContent=correct+" / "+total+" bonnes réponses";
   $("progress-bar").style.width="100%"; sendResultEmail(pct,total,tier[1]);
 }
-function sendResultEmail(pct,total,stars) {
+function sendResultEmail(pct,total,stars) { EducationReporting.complete(correct, questions.length);
   const statusEl=$("email-status"); statusEl.className="email-status sending"; statusEl.textContent="📧 Envoi du rapport en cours…";
   const date=new Date().toLocaleDateString("fr-FR",{weekday:"long",year:"numeric",month:"long",day:"numeric"});
   fetch(APPS_SCRIPT_URL,{

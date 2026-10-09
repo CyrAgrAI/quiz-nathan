@@ -51,6 +51,8 @@
     .result-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
     @media (max-width: 520px) { body { padding: 16px; } h1 { font-size: 2.5rem; } .bottom { flex-wrap: wrap; } .stats { order: 3; flex-basis: 100%; } }
   </style>
+<script src="../../education-reporting.js"></script>
+<script>window.EducationReporting ||= {start(){},complete(){}};</script>
 </head>
 <body>
   <main class="app">
@@ -157,7 +159,7 @@
       $("stars").textContent = tier[1];
       sendResultEmail(pct, tier[1]);
     }
-    function sendResultEmail(pct, stars) {
+    function sendResultEmail(pct, stars) { EducationReporting.complete(correct, questions.length);
       const status = $("email-status");
       status.textContent = "📧 Envoi du rapport en cours…";
       fetch(APPS_SCRIPT_URL, {
@@ -166,7 +168,7 @@
       }).then(() => { status.textContent = `✅ Rapport envoyé à ${DEST_EMAIL}`; })
         .catch(() => { status.textContent = "⚠️ Erreur d'envoi — vérifie l'URL Apps Script"; });
     }
-    function initQuiz() {
+    function initQuiz() { EducationReporting.start();
       index = correct = wrong = 0;
       wrongAnswers = [];
       questions = buildQuestions();

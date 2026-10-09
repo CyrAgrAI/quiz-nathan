@@ -421,6 +421,8 @@
       }
     }
   </style>
+<script src="../../education-reporting.js"></script>
+<script>window.EducationReporting ||= {start(){},complete(){}};</script>
 </head>
 <body>
   <main>
@@ -935,7 +937,7 @@
       }
     }
 
-    function sendResultEmail() {
+    function sendResultEmail() { EducationReporting.complete(score, maxScore);
       if (emailSent) return;
       emailSent = true;
       const pct = Math.round(score / maxScore * 100);
@@ -1053,7 +1055,7 @@
     });
 
     restartButton.addEventListener("click", () => {
-      items = shuffle(originalItems);
+      EducationReporting.start(); items = shuffle(originalItems);
       index = 0;
       score = 0;
       validatedPoints = 0;
@@ -1072,7 +1074,7 @@
       revisionToggle.textContent = revisionTable.hidden ? "Réviser la table" : "Masquer la table";
     });
 
-    items = shuffle(originalItems);
+    EducationReporting.start(); items = shuffle(originalItems);
     updateScore();
     renderQuestion();
   </script>
