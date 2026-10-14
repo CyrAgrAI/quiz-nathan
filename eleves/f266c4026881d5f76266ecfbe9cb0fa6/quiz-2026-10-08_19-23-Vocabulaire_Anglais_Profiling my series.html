@@ -212,6 +212,11 @@
       background: #145c33;
     }
 
+    .submit-button:disabled {
+      background: #dedbd3;
+      color: var(--ink);
+    }
+
     .next-button {
       align-self: center;
       background: var(--accent);
@@ -421,8 +426,6 @@
       }
     }
   </style>
-<script src="../../education-reporting.js"></script>
-<script>window.EducationReporting ||= {start(){},complete(){}};</script>
 </head>
 <body>
   <main>
@@ -753,6 +756,7 @@
     const direction = document.querySelector("#direction");
     const progress = document.querySelector("#progress");
     const form = document.querySelector("#answer-form");
+    const submitButton = form.querySelector("button[type=submit]");
     const answerInput = document.querySelector("#answer");
     const feedback = document.querySelector("#feedback");
     const scoreCard = document.querySelector(".score");
@@ -937,7 +941,7 @@
       }
     }
 
-    function sendResultEmail() { EducationReporting.complete(score, maxScore);
+    function sendResultEmail() {
       if (emailSent) return;
       emailSent = true;
       const pct = Math.round(score / maxScore * 100);
@@ -964,6 +968,7 @@
         feedback.className = `final-score ${scoreBand(rawPct)}`;
         feedback.innerHTML = `Score final : <strong>${note(rawPct)}</strong> (${formatScore(score)} / ${maxScore} points).`;
         answerInput.disabled = true;
+        submitButton.disabled = true;
         nextButton.disabled = true;
         sendResultEmail();
         return;
@@ -975,6 +980,7 @@
       progress.textContent = `${index + 1} / ${items.length}`;
       answerInput.value = "";
       answerInput.disabled = false;
+      submitButton.disabled = false;
       nextButton.disabled = true;
       answered = false;
       setRevisionAccess(false);
@@ -1035,6 +1041,7 @@
         wrongAnswers.push({ prompt: item.prompt, correct: item.answer, dir: item.direction, given: givenAnswer, points: gained });
       }
       answered = true;
+      submitButton.disabled = true;
       nextButton.disabled = false;
       updateScore();
       setRevisionAccess(gained < 1);
@@ -1055,7 +1062,7 @@
     });
 
     restartButton.addEventListener("click", () => {
-      EducationReporting.start(); items = shuffle(originalItems);
+      items = shuffle(originalItems);
       index = 0;
       score = 0;
       validatedPoints = 0;
@@ -1074,7 +1081,7 @@
       revisionToggle.textContent = revisionTable.hidden ? "Réviser la table" : "Masquer la table";
     });
 
-    EducationReporting.start(); items = shuffle(originalItems);
+    items = shuffle(originalItems);
     updateScore();
     renderQuestion();
   </script>

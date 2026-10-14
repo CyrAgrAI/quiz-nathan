@@ -193,6 +193,11 @@
       background: #145c33;
     }
 
+    .submit-button:disabled {
+      background: #dedbd3;
+      color: var(--ink);
+    }
+
     .next-button {
       align-self: center;
       background: var(--accent);
@@ -515,6 +520,7 @@
     const direction = document.querySelector("#direction");
     const progress = document.querySelector("#progress");
     const form = document.querySelector("#answer-form");
+    const submitButton = form.querySelector("button[type=submit]");
     const answerInput = document.querySelector("#answer");
     const feedback = document.querySelector("#feedback");
     const scoreCard = document.querySelector(".score");
@@ -648,6 +654,7 @@
         feedback.className = `final-score ${scoreBand(rawPct)}`;
         feedback.innerHTML = `Score final : <strong>${formatScore(score)} / ${maxScore}</strong>.`;
         answerInput.disabled = true;
+        submitButton.disabled = true;
         nextButton.disabled = true;
         return;
       }
@@ -658,6 +665,7 @@
       progress.textContent = `${index + 1} / ${items.length}`;
       answerInput.value = "";
       answerInput.disabled = false;
+      submitButton.disabled = false;
       nextButton.disabled = true;
       answered = false;
       setRevisionAccess(false);
@@ -706,6 +714,7 @@
       const gained = answerScore(givenAnswer, item.answer);
       score += gained;
       answered = true;
+      submitButton.disabled = true;
       nextButton.disabled = false;
       updateScore();
       setRevisionAccess(gained < 1);

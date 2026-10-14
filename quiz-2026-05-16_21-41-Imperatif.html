@@ -218,6 +218,11 @@
       background: #145c33;
     }
 
+    .submit-button:disabled {
+      background: #dedbd3;
+      color: var(--ink);
+    }
+
     .next-button {
       align-self: center;
       background: var(--accent);
@@ -635,6 +640,7 @@
     const word = document.querySelector("#word");
     const progress = document.querySelector("#progress");
     const form = document.querySelector("#answer-form");
+    const submitButton = form.querySelector("button[type=submit]");
     const answerTu = document.querySelector("#answer-tu");
     const answerVosotros = document.querySelector("#answer-vosotros");
     const feedback = document.querySelector("#feedback");
@@ -721,6 +727,7 @@
         feedback.className = `final-score ${scoreBand(rawPct)}`;
         feedback.innerHTML = `Score final : <strong>${formatScore(score)} / ${maxScore}</strong>.`;
       answerTu.disabled = true;
+      submitButton.disabled = true;
       answerVosotros.disabled = true;
       nextButton.disabled = true;
       return;
@@ -732,6 +739,7 @@
       answerTu.value = "";
       answerVosotros.value = "";
       answerTu.disabled = false;
+      submitButton.disabled = false;
       answerVosotros.disabled = false;
       nextButton.disabled = true;
       answered = false;
@@ -786,6 +794,7 @@
       const gained = tuScore + vosotrosScore;
       score += gained;
       answered = true;
+      submitButton.disabled = true;
       nextButton.disabled = false;
       updateScore();
       setRevisionAccess(gained < 2);
