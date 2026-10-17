@@ -6,7 +6,7 @@ body {
   font-family: 'Poppins', sans-serif !important;
 }
 h1, h2, h3, .quiz-title, .result-title, .question-num, .question-number, .question-index, #progress, #grade {
-  font-family: system-ui, sans-serif !important;
+  font-family: 'Bangers', system-ui, sans-serif !important;
   letter-spacing: 1px !important;
 }
 .question-num, .question-number, .question-index, #progress { text-align: center !important; }
