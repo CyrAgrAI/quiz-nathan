@@ -9,6 +9,7 @@ h1, h2, h3, .question-num, .question-number, .question-index, #progress, #grade 
   font-family: 'Bangers', cursive !important;
   letter-spacing: 1px !important;
 }
+.question-num, .question-number, .question-index, #progress { text-align: center !important; }
 h1, h2, h3, #progress, #grade { color: #ffd200 !important; }
 .quiz, .settings, .card, .result-card, .question-card {
   background: rgba(255,255,255,.07) !important;
